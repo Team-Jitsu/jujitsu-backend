@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+/**
+ * 토큰 만료 여부 확인, 파싱, 헤더에서 토큰 꺼내기 등 보조 메서드
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
@@ -20,6 +23,12 @@ public class JwtTokenUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
+
+    /**
+     *
+     * @param request
+     * @return
+     */
     public String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");
         return (bearer != null && bearer.startsWith("Bearer ")) ? bearer.substring(7) : null;

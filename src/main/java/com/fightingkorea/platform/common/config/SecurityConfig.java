@@ -12,6 +12,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Spring Security 설정파일.
+ * 필터 등록, 인증/인가 설정, 경로별 권한 설정
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -47,3 +51,6 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+//이거 구현 더 해야함.
+// securityConfig에서 security userDetails에 저장하는 로직
