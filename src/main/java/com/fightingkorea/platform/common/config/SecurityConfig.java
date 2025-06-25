@@ -8,10 +8,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Spring Security 설정파일.
+ * 필터 등록, 인증/인가 설정, 경로별 권한 설정
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -39,11 +45,20 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // 인증 필요없음 -> filter 미실행
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
                 .exceptionHandling(e -> e // 인증 실패시 예외 처리
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
+
+//이거 구현 더 해야함.
+// securityConfig에서 security userDetails에 저장하는 로직
