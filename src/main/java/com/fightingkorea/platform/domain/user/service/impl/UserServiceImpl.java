@@ -1,6 +1,5 @@
 package com.fightingkorea.platform.domain.user.service.impl;
 
-import com.fightingkorea.platform.UserThread;
 import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
@@ -10,7 +9,6 @@ import com.fightingkorea.platform.domain.user.exception.UserConflictException;
 import com.fightingkorea.platform.domain.user.exception.UserNotFoundException;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.user.service.UserService;
-import com.fightingkorea.platform.global.UserThreadLocal;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
