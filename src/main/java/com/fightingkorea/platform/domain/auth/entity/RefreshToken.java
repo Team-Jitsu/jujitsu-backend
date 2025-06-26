@@ -9,7 +9,7 @@ import lombok.*;
  * 사용자별로 토큰을 저장/검증
  */
 @Entity
-@Table(name = "users")
+@Table(name = "refresh_token")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
