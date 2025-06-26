@@ -5,6 +5,7 @@ import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
+import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.exception.UserConflictException;
 import com.fightingkorea.platform.domain.user.exception.UserNotFoundException;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
@@ -12,8 +13,11 @@ import com.fightingkorea.platform.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -57,6 +61,7 @@ public class UserServiceImpl implements UserService {
         return ResponseMapper.toResponse(foundUser);
     }
 
+    @Override
     public Void deleteUser(Long userId) {
 
         Optional<User> optionalUser = userRepository.findByUserId(userId);
@@ -67,5 +72,10 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(deleteTargetUser);
         return null;
 
+    }
+
+    public Page<User> getUsers(String name, Sex sex,
+                               LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable){
+        return userRepository.searchUsers(name, sex, fromDate, toDate, pageable);
     }
 }
