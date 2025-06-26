@@ -2,9 +2,11 @@ package com.fightingkorea.platform.domain.user.service.impl;
 
 import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
+import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.exception.UserConflictException;
+import com.fightingkorea.platform.domain.user.exception.UserNotFoundException;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -12,12 +14,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
+
+    private UserResponse responseMapper(User user){
+        return new UserResponse(user.getUserId(), user.getNickname(),
+                user.getRole().getLabel(), user.getCreatedAt()
+        );
+    }
+
 
     @Override
     public UserResponse registerUser(RegisterRequest registerRequest, Role role) {
@@ -33,11 +45,35 @@ public class UserServiceImpl implements UserService {
 
         log.info("회원가입 성공: userId={}, email={}", user.getUserId(), user.getEmail());
 
-        return new UserResponse(
-                user.getUserId(),
-                user.getNickname(),
-                user.getRole().getLabel(),
-                user.getCreatedAt()
-        );
+            return responseMapper(user);
+
+    }
+
+
+    @Override
+    public UserResponse updateUser(Long userId, UserUpdateRequest userUpdateRequest) {
+        Optional<User> optionalUser = userRepository.findByUserId(userId);
+        if(optionalUser.isEmpty()){
+            throw new UserNotFoundException();
+        }
+        User foundUser = optionalUser.get();
+        foundUser.updateUser(
+                userUpdateRequest.getAge(),userUpdateRequest.getSex(),
+                userUpdateRequest.getNickname(), userUpdateRequest.getRegion(),
+                userUpdateRequest.getMobileNumber(), userUpdateRequest.getGymLocation());
+        userRepository.save(foundUser);
+        return responseMapper(foundUser);
+    }
+
+    public Void deleteUser(Long userId) {
+
+        Optional<User> optionalUser = userRepository.findByUserId(userId);
+        if(optionalUser.isEmpty()){
+            throw new UserNotFoundException();
+        }
+        User deleteTargetUser = optionalUser.get();
+        userRepository.delete(deleteTargetUser);
+        return null;
+
     }
 }

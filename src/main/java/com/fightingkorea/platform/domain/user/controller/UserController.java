@@ -2,16 +2,15 @@ package com.fightingkorea.platform.domain.user.controller;
 
 import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
+import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.service.UserService;
+import com.fightingkorea.platform.global.UserThreadLocal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,5 +23,21 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.registerUser(registerRequest, Role.TRAINEE));
+    }
+
+    @PutMapping("/me")
+    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
+        UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
+
+        return userResponse; //이렇게 하면
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteUser(){
+        Void userResponse = userService.deleteUser(UserThreadLocal.getUserId());
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(userResponse);
     }
 }
