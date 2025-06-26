@@ -26,14 +26,14 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
+    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
         UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
 
-        return userResponse; //이렇게 하면
+        return userResponse;
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteUser(){
+    public ResponseEntity<Void> deleteUser() {
         Void userResponse = userService.deleteUser(UserThreadLocal.getUserId());
 
         return ResponseEntity
