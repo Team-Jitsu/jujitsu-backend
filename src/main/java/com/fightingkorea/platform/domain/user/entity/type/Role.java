@@ -1,0 +1,16 @@
+package com.fightingkorea.platform.domain.user.entity.type;
+
+import lombok.Getter;
+
+@Getter
+public enum Role {
+    TRAINEE("수련생"),
+    PLAYER("선수"),
+    ADMIN("관리자");
+
+    private final String label;
+
+    Role(String label) {
+        this.label = label;
+    }
+}
