@@ -16,7 +16,11 @@ public class Trainer {
     private int trainerId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "user_id", // 명시적 참조 컬럼 지정
+            foreignKey = @ForeignKey(name = "trainers_ibfk_1") // FK 이름 지정
+    )
     private User user;
 
     @Column(length = 100, nullable = false)

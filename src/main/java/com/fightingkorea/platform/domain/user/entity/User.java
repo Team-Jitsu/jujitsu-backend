@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId; // 회원 고유 ID
 
     @Column(length = 100, nullable = false)

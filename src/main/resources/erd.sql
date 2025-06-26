@@ -61,6 +61,8 @@ CREATE TABLE `earning_buffer` (
                                   `created_at` datetime NOT NULL,
                                   PRIMARY KEY (`buffer_id`),
                                   FOREIGN KEY (`trainer_id`) REFERENCES `trainers`(`trainer_id`)
+                                  FOREIGN KEY (`user_videos_id`) REFERENCES `user_videos`(`user_videos_id`),
+                                  FOREIGN KEY (`earning_id`) REFERENCES `earnings`(`earning_id`)
 );
 
 CREATE TABLE `videos` (
@@ -71,7 +73,7 @@ CREATE TABLE `videos` (
                           `description` text DEFAULT NULL,
                           `upload_time` datetime NOT NULL,
                           `price` int NOT NULL,
-                          `like` int NOT NULL DEFAULT 0,
+                          `likes_count` int NOT NULL DEFAULT 0,
                           PRIMARY KEY (`video_id`),
                           INDEX (`upload_time`),
                           FOREIGN KEY (`trainer_id`) REFERENCES `trainers`(`trainer_id`)
