@@ -24,13 +24,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private UserResponse responseMapper(User user){
-        return new UserResponse(user.getUserId(), user.getNickname(),
-                user.getRole().getLabel(), user.getCreatedAt()
-        );
-    }
-
-
     @Override
     public UserResponse registerUser(RegisterRequest registerRequest, Role role) {
         log.info("회원가입 시도: email={}, role={}", registerRequest.getEmail(), role.name());
@@ -45,8 +38,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("회원가입 성공: userId={}, email={}", user.getUserId(), user.getEmail());
 
-            return responseMapper(user);
-
+        return ResponseMapper.toResponse(user);
     }
 
 
@@ -62,7 +54,7 @@ public class UserServiceImpl implements UserService {
                 userUpdateRequest.getNickname(), userUpdateRequest.getRegion(),
                 userUpdateRequest.getMobileNumber(), userUpdateRequest.getGymLocation());
         userRepository.save(foundUser);
-        return responseMapper(foundUser);
+        return ResponseMapper.toResponse(foundUser);
     }
 
     public Void deleteUser(Long userId) {
