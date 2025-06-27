@@ -55,6 +55,6 @@ public class UserController {
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             Pageable pageable) {
-        return userService.getUsers(name, sex, fromDate, toDate);
+        return userService.getUsers(name, sex, fromDate, toDate, pageable);
     }
 }
