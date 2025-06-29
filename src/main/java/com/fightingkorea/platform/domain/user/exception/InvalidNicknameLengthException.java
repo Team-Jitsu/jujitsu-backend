@@ -5,10 +5,10 @@ import com.fightingkorea.platform.global.common.exception.ValidationException;
 
 import java.util.List;
 
-public class InvalidDateRangeException extends ValidationException {
-    public InvalidDateRangeException() {
+public class InvalidNicknameLengthException extends ValidationException {
+    public InvalidNicknameLengthException() {
         super(List.of(
-                new ErrorResponse.FieldError("", "fromDate는 toDate보다 이후일 수 없습니다." )
+                new ErrorResponse.FieldError("nickname", "닉네임은 10자 이상일 수 없습니다.")
         ));
     }
 }
