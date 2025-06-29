@@ -14,10 +14,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class UserUpdateRequest {
 
-    /**
-     * 비밀번호
-     */
-    private String password;
 
     /**
      * 이메일

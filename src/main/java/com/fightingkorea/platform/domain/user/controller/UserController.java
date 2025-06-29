@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.domain.user.controller;
 
+import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
 import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
@@ -25,6 +26,12 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * 수련생을 등록하는 메서드.
+     *
+     * @param registerRequest
+     * @return
+     */
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated RegisterRequest registerRequest) {
         return ResponseEntity
@@ -32,13 +39,41 @@ public class UserController {
                 .body(userService.registerUser(registerRequest, Role.TRAINEE));
     }
 
+    /**
+     * 유저 정보를 업데이트 하는 메서드.
+     *
+     * @param userUpdateRequest
+     * @return
+     */
     @PutMapping("/me")
-    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
         UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
 
-        return userResponse; //이렇게 하면
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userResponse);
+
+//        return ResponseEntity
+//                .ok(userResponse);
     }
 
+    /**
+     *  비밀번호를 업데이트하는 메서드입니다.
+     *
+     * @param passwordUpdateRequest
+     * @return
+     */
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> updatePassword(@RequestBody PasswordUpdateRequest passwordUpdateRequest) {
+        Long userId = UserThreadLocal.getUserId(); // JWT에서 꺼낸 유저 ID
+        userService.updatePassword(userId, passwordUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+    /**
+     * 유저를 삭제하는 메서드.
+     *
+     * @return
+     */
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser(){
         Void userResponse = userService.deleteUser(UserThreadLocal.getUserId());
@@ -48,6 +83,16 @@ public class UserController {
                 .body(userResponse);
     }
 
+    /**
+     * 유저 목록을 조회하는 메서드.
+     *
+     * @param name
+     * @param sex
+     * @param fromDate
+     * @param toDate
+     * @param pageable
+     * @return
+     */
     @GetMapping
     public Page<User> getUsers(
             @RequestParam(required = false) String name,

@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.domain.user.service.impl;
 
+import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
 import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +28,8 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
@@ -47,6 +51,13 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * 유저 정보를 수정합니다.
+     *
+     * @param userId
+     * @param userUpdateRequest
+     * @return
+     */
     @Override
     public UserResponse updateUser(Long userId, UserUpdateRequest userUpdateRequest) {
         Optional<User> optionalUser = userRepository.findByUserId(userId);
@@ -108,6 +119,28 @@ public class UserServiceImpl implements UserService {
         }
 
         return users;
+    }
+
+    /**
+     * 로그인된 사용자가 자신의 비밀번호를 업데이트 합니다.
+     * 기존 비밀번호 확인 -> 새 비밀번호로 업데이트.
+     *
+     * @param userId
+     * @param passwordUpdateRequest
+     */
+    @Override
+    public void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(()-> new UserNotFoundException());
+
+        // 현재 비밀번호 검증 (유저가 진짜 본인인지 확인)
+        if (!passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), user.getPassword())){
+            throw new InvalidCurrentPasswordException();
+        }
+
+        // 새 비밀번호 암호화 후 저장
+        user.updatePassword(passwordEncoder.encode(passwordUpdateRequest.getNewPassword()));
+        userRepository.save(user);
     }
 
     private boolean containsForbiddenWords(String nickname) {
