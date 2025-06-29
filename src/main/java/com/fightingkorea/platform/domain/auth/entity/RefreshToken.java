@@ -17,6 +17,7 @@ import lombok.*;
 public final class RefreshToken {
 
     @Id
+    @Column(name = "refresh_token")
     private String refreshToken;
 
     @OneToOne(fetch = FetchType.LAZY)

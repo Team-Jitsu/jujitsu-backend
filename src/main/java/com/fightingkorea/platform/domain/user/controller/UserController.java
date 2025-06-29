@@ -46,6 +46,7 @@ public class UserController {
      * @return
      */
     @PutMapping("/me")
+    feature/jiyeon
     public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
         UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
 
@@ -55,6 +56,7 @@ public class UserController {
 
 //        return ResponseEntity
 //                .ok(userResponse);
+
     }
 
     /**
@@ -75,7 +77,7 @@ public class UserController {
      * @return
      */
     @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteUser(){
+    public ResponseEntity<Void> deleteUser() {
         Void userResponse = userService.deleteUser(UserThreadLocal.getUserId());
 
         return ResponseEntity
