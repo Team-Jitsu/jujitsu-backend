@@ -6,9 +6,7 @@ import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
-import com.fightingkorea.platform.domain.user.exception.InvalidDateRangeException;
-import com.fightingkorea.platform.domain.user.exception.UserConflictException;
-import com.fightingkorea.platform.domain.user.exception.UserNotFoundException;
+import com.fightingkorea.platform.domain.user.exception.*;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
@@ -19,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -84,14 +84,35 @@ public class UserServiceImpl implements UserService {
             throw new InvalidDateRangeException();
         }
 
-        // 2. 조회
+        // 2. 닉네임 길이 제한
+        if (nickname != null && (nickname.length() > 10)) {
+            throw new InvalidNicknameLengthException();
+        }
+
+        // 3. 닉네임에 금지어 포함 여부 (예시 : 욕설, 시스템 예약어 등)
+        if (nickname != null && containsForbiddenWords(nickname)) {
+            throw new ForbiddenWordInNicknameException();
+        }
+
+        // 4. 성별 값 유효성 검사 (null 이거나 enum 중 하나인지 )
+        if (sex != null && !EnumSet.allOf(Sex.class).contains(sex)) {
+            throw new InvalidSexValueException();
+        }
+
+        // 5. 조회
         Page<User> users = userRepository.searchUsers(nickname, sex, fromDate, toDate, pageable);
 
-        // 3. 검색 결과 없으면 예외
+        // 6. 검색 결과 없으면 예외
         if (users.isEmpty()) {
             throw new UserNotFoundException();
         }
 
         return users;
     }
+
+    private boolean containsForbiddenWords(String nickname) {
+        List<String> forbiddenWords = List.of("욕설1", "욕설2");
+        return forbiddenWords.stream().anyMatch(nickname.toLowerCase()::contains);
+    }
+
 }
