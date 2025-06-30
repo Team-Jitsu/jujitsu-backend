@@ -46,9 +46,9 @@ public class UserController {
      * @return
      */
     @PutMapping("/me")
-    feature/jiyeon
     public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
         UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
+        // JWT에서 꺼낸 현재 로그인 유저 ID
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -78,7 +78,7 @@ public class UserController {
      */
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser() {
-        Void userResponse = userService.deleteUser(UserThreadLocal.getUserId());
+        Void userResponse = userService.deleteUser(UserThreadLocal.getUserId()); //JWT 에서 꺼낸 userId 사용
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

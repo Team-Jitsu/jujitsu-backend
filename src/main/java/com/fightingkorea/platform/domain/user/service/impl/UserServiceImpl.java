@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.domain.user.service.impl;
 
+import com.fightingkorea.platform.domain.auth.repository.RefreshTokenRepository;
 import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
 import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
@@ -30,6 +31,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     private final UserRepository userRepository;
 
@@ -82,6 +85,11 @@ public class UserServiceImpl implements UserService {
         }
         User deleteTargetUser = optionalUser.get();
         userRepository.delete(deleteTargetUser);
+
+        // 리프레시 토큰 제거
+
+        refreshTokenRepository.deleteByUser_UserId(userId);
+
         return null;
 
     }
