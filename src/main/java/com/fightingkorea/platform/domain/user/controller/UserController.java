@@ -46,13 +46,11 @@ public class UserController {
      * @return
      */
     @PutMapping("/me")
-    public ResponseEntity<UserResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
+    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
         UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
         // JWT에서 꺼낸 현재 로그인 유저 ID
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(userResponse);
+        return userResponse;
 
 //        return ResponseEntity
 //                .ok(userResponse);
@@ -71,6 +69,7 @@ public class UserController {
         userService.updatePassword(userId, passwordUpdateRequest);
         return ResponseEntity.ok().build();
     }
+
     /**
      * 유저를 삭제하는 메서드.
      *

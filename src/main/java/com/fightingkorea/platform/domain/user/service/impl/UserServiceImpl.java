@@ -151,6 +151,23 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public UserResponse getUserInfo(Long userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        return ResponseMapper.toResponse(user);
+    }
+
+    @Override
+    public UserResponse updateUserActive(Long userId, Boolean isActive) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        user.updateActive(isActive);
+        return ResponseMapper.toResponse(user);
+    }
+
     private boolean containsForbiddenWords(String nickname) {
         List<String> forbiddenWords = List.of("욕설1", "욕설2");
         return forbiddenWords.stream().anyMatch(nickname.toLowerCase()::contains);

@@ -45,6 +45,9 @@ public class SecurityConfig {
                                 "/api/users/register"
                         )
                         .permitAll() // 인증 필요없음 -> filter 미실행
+
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")// ADMIN만 접근
+
                         .anyRequest().authenticated() // 그 외는 인증 필요
                 )
                 .exceptionHandling(e -> e // 인증 실패시 예외 처리

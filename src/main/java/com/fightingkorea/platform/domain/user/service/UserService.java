@@ -38,7 +38,7 @@ public interface UserService {
      * @param userId
      * @return
      */
-    Void deleteUser(Long userId);
+    void deleteUser(Long userId);
 
     /**
      * 조건에 맞는 유저 목록을 가져옵니다.
@@ -60,4 +60,19 @@ public interface UserService {
      * @param passwordUpdateRequest
      */
     void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest);
+
+    /**
+     * 유저 아이디로 유저의 정보를 확인합니다.
+     *
+     * @param userId
+     */
+    UserResponse getUserInfo(Long userId);
+
+
+    /**
+     * 유저의 상태를 업데이트 합니다.
+     *
+     * @param userId
+     */
+    UserResponse updateUserActive(Long userId, Boolean isActive);
 }
