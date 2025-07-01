@@ -11,18 +11,17 @@ import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.exception.*;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.user.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -63,38 +62,32 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserResponse updateUser(Long userId, UserUpdateRequest userUpdateRequest) {
-        Optional<User> optionalUser = userRepository.findByUserId(userId);
-        if(optionalUser.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        User foundUser = optionalUser.get();
+        User foundUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException());
+
         foundUser.updateUser(
                 userUpdateRequest.getAge(),userUpdateRequest.getSex(),
                 userUpdateRequest.getNickname(), userUpdateRequest.getRegion(),
                 userUpdateRequest.getMobileNumber(), userUpdateRequest.getGymLocation());
+
         userRepository.save(foundUser);
+
         return ResponseMapper.toResponse(foundUser);
     }
 
     @Override
-    public Void deleteUser(Long userId) {
+    public void deleteUser(Long userId) {
 
-        Optional<User> optionalUser = userRepository.findByUserId(userId);
-        if(optionalUser.isEmpty()){
-            throw new UserNotFoundException();
-        }
-        User deleteTargetUser = optionalUser.get();
-        userRepository.delete(deleteTargetUser);
+        User deleteTargetUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException());
 
-        // 리프레시 토큰 제거
+        deleteTargetUser.updateActive(true);
 
         refreshTokenRepository.deleteByUser_UserId(userId);
-
-        return null;
-
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<User> getUsers(String nickname, Sex sex,
                                LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable){
 

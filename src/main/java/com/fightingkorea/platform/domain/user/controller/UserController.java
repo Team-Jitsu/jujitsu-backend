@@ -66,7 +66,9 @@ public class UserController {
     @PutMapping("/me/password")
     public ResponseEntity<Void> updatePassword(@RequestBody PasswordUpdateRequest passwordUpdateRequest) {
         Long userId = UserThreadLocal.getUserId(); // JWT에서 꺼낸 유저 ID
+
         userService.updatePassword(userId, passwordUpdateRequest);
+
         return ResponseEntity.ok().build();
     }
 
@@ -77,11 +79,9 @@ public class UserController {
      */
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser() {
-        Void userResponse = userService.deleteUser(UserThreadLocal.getUserId()); //JWT 에서 꺼낸 userId 사용
+        userService.deleteUser(UserThreadLocal.getUserId()); //JWT 에서 꺼낸 userId 사용
 
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(userResponse);
+        return ResponseEntity.noContent().build();
     }
 
     /**

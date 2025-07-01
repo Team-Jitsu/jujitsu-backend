@@ -32,6 +32,8 @@ public interface UserService {
      */
     UserResponse updateUser(Long userId, UserUpdateRequest userUpdateRequest);
 
+    // admin만 필요한거: 유저 권한 수정
+
     /**
      * 유저를 삭제합니다.
      *
