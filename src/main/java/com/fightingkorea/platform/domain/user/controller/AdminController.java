@@ -2,6 +2,7 @@ package com.fightingkorea.platform.domain.user.controller;
 
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.entity.User;
+import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,11 @@ public class AdminController {
     public Page<User> getUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Sex sex,
+            @RequestParam(required = false) Role role,
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             Pageable pageable) {
-        return userService.getUsers(name, sex, fromDate, toDate, pageable);
+        return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
     }
 
     /**

@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<User> getUsers(String nickname, Sex sex,
+    public Page<User> getUsers(String nickname, Sex sex, Role role,
                                LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable){
 
         // 1. 날짜 범위 유효성 체크

@@ -89,6 +89,7 @@ public class UserController {
      *
      * @param name
      * @param sex
+     * @param role
      * @param fromDate
      * @param toDate
      * @param pageable
@@ -98,9 +99,10 @@ public class UserController {
     public Page<User> getUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Sex sex,
+            @RequestParam(required = false) Role role,
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             Pageable pageable) {
-        return userService.getUsers(name, sex, fromDate, toDate, pageable);
+        return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
     }
 }

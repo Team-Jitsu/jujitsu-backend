@@ -47,12 +47,13 @@ public interface UserService {
      *
      * @param name
      * @param sex
+     * @param role
      * @param fromDate
      * @param toDate
      * @param pageable
      * @return
      */
-    Page<User> getUsers(String name, Sex sex,
+    Page<User> getUsers(String name, Sex sex, Role role,
                         LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable);
 
     /**
