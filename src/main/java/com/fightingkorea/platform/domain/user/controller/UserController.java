@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,16 +28,17 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * 수련생을 등록하는 메서드.
-     *
-     * @param registerRequest
+     * 수련생을 등록하는 메서드
      * @return
      */
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated RegisterRequest registerRequest) {
+        UserResponse userResponse = userService.registerUser(registerRequest, Role.TRAINEE);
+        userResponse.setCreatedAt(null);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.registerUser(registerRequest, Role.TRAINEE));
+                .body(userResponse);
     }
 
     /**
@@ -51,10 +53,6 @@ public class UserController {
         // JWT에서 꺼낸 현재 로그인 유저 ID
 
         return userResponse;
-
-//        return ResponseEntity
-//                .ok(userResponse);
-
     }
 
     /**
