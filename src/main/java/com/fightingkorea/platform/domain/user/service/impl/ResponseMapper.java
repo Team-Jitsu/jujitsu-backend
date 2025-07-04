@@ -1,11 +1,37 @@
 package com.fightingkorea.platform.domain.user.service.impl;
 
+import com.fightingkorea.platform.domain.trainer.dto.SpecialtyResponse;
+import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
+import com.fightingkorea.platform.domain.trainer.entity.Specialty;
+import com.fightingkorea.platform.domain.trainer.entity.Trainer;
+import com.fightingkorea.platform.domain.trainer.entity.TrainerSpecialty;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.entity.User;
 
-public class ResponseMapper  {
-    public static UserResponse toResponse(User user) {
+import java.util.List;
+
+public class ResponseMapper {
+    public static UserResponse toUserResponse(User user) {
         return new UserResponse(user.getUserId(), user.getNickname(),
                 user.getRole().getLabel(), user.getCreatedAt());
+    }
+
+    public static SpecialtyResponse toSpecialtyResponse(Specialty specialty) {
+        return new SpecialtyResponse(specialty.getSpecialtyId(), specialty.getSpecialtyName());
+    }
+
+    public static TrainerResponse toTrainerResponse(Trainer trainer, List<TrainerSpecialty> trainerSpecialtyList) {
+        return new TrainerResponse(
+                trainer.getTrainerId(),
+                trainer.getAccountOwnerName(),
+                trainer.getAccountNumber(),
+                trainer.getBio(),
+                trainer.getAutomaticSettlement(),
+                trainer.getCharge(),
+                trainerSpecialtyList.stream()
+                        .map(ts -> toSpecialtyResponse(ts.getSpecialty()))
+                        .toList(),
+                ResponseMapper.toUserResponse(trainer.getUser())
+        );
     }
 }

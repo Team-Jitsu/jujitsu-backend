@@ -21,7 +21,7 @@ public interface UserService {
      * @param role
      * @return
      */
-    UserResponse registerUser(RegisterRequest registerRequest, Role role);
+    UserResponse registerUser(RegisterRequest registerRequest, Role role)
 
     /**
      * 유저 정보를 수정합니다.

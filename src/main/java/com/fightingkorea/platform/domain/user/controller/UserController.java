@@ -33,10 +33,10 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated RegisterRequest registerRequest) {
+    public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated UserRegisterRequest userRegisterRequest) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.registerUser(registerRequest, Role.TRAINEE));
+                .body(userService.registerUser(userRegisterRequest, Role.TRAINEE));
     }
 
     /**

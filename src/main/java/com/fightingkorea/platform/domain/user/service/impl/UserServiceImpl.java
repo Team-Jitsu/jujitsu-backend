@@ -36,20 +36,20 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserResponse registerUser(RegisterRequest registerRequest, Role role) {
-        log.info("회원가입 시도: email={}, role={}", registerRequest.getEmail(), role.name());
+    public UserResponse registerUser(UserRegisterRequest userRegisterRequest, Role role) {
+        log.info("회원가입 시도: email={}, role={}", userRegisterRequest.getEmail(), role.name());
 
-        if (userRepository.existsByEmailAndIsActiveIsTrue(registerRequest.getEmail())) {
-            log.warn("회원가입 실패 - 중복 이메일: {}", registerRequest.getEmail());
+        if (userRepository.existsByEmailAndIsActiveIsTrue(userRegisterRequest.getEmail())) {
+            log.warn("회원가입 실패 - 중복 이메일: {}", userRegisterRequest.getEmail());
             throw new UserConflictException();
         }
 
-        User user = User.createUser(registerRequest, role);
+        User user = User.createUser(userRegisterRequest, role);
         userRepository.save(user);
 
         log.info("회원가입 성공: userId={}, email={}", user.getUserId(), user.getEmail());
 
-        return ResponseMapper.toResponse(user);
+        return ResponseMapper.toUserResponse(user);
     }
 
 
@@ -64,9 +64,8 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUser(Long userId, UserUpdateRequest userUpdateRequest) {
         User foundUser = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException());
-
         foundUser.updateUser(
-                userUpdateRequest.getAge(),userUpdateRequest.getSex(),
+                userUpdateRequest.getAge(), userUpdateRequest.getSex(),
                 userUpdateRequest.getNickname(), userUpdateRequest.getRegion(),
                 userUpdateRequest.getMobileNumber(), userUpdateRequest.getGymLocation());
 
