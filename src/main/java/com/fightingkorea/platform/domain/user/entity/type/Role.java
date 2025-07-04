@@ -11,6 +11,9 @@ public enum Role {
     private final String label;
 
     Role(String label) {
+
         this.label = label;
     }
+
+    //기본값(영어)= name(), 한글레이블(사용자 정의) =label()
 }

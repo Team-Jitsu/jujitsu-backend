@@ -92,6 +92,10 @@ public class User {
         this.gymLocation = gymLocation;
     }
 
+    public void updateActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
 
     // 엔티티 저장 전 생성 시간 자동 설정
     @PrePersist
