@@ -25,23 +25,23 @@ public class JwtTokenUtil {
     private final UserRepository userRepository;
 
     // 토큰을 만들 때 사용할 비밀 키 (서버에서만 알고 있는 비밀번호 같은 것)
-    private final String accessSecret = "access-secret-key"; // Access 토큰 서명용 키
-    private final String refreshSecret = "refresh-secret-key"; //Refresh 토큰 서명용 키
+    private final String accessSecret = "HD2J8L2gPZTLOvnqS8u0KAYGuoqD0UCkNnkUE5wGflk="; // Access 토큰 서명용 키
+    private final String refreshSecret = "HD2J8L2gPZTLOvnqS8u0KAYGuoqD0UCkNnkUE5wGflk="; //Refresh 토큰 서명용 키
 
     // Access Token 유효 시간: 30분
-    private final long accessTokenValidity = 1000 * 60 * 30;
+    private final static long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 30;
 
     // Refresh Token 유효 시간: 7일
-    private final long refreshTokenValidity = 1000 * 60 * 60 * 24 * 7;
+    private final static long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 7;
 
     //Access Token 생성 : 유저 ID와 권한 정보를 넣어서 생성
     public String createAccessToken(String userId) {
-        return createToken(userId, accessTokenValidity, accessSecret);
+        return createToken(userId, ACCESS_TOKEN_VALIDITY, accessSecret);
     }
 
     // Refresh Token 생성 :
     public String createRefreshToken(String userId) {
-        return createToken(userId, refreshTokenValidity, refreshSecret);
+        return createToken(userId, REFRESH_TOKEN_VALIDITY, refreshSecret);
     }
 
     // 실제로 토큰을 생성하는 공통 로직

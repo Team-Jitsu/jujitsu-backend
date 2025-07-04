@@ -6,13 +6,17 @@ import com.fightingkorea.platform.domain.auth.entity.RefreshToken;
 import com.fightingkorea.platform.domain.auth.repository.RefreshTokenRepository;
 import com.fightingkorea.platform.domain.user.entity.User;
 
+import com.fightingkorea.platform.domain.user.exception.UserNotFoundException;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
+import com.fightingkorea.platform.global.UserThreadLocal;
 import com.fightingkorea.platform.global.auth.jwt.JwtTokenUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -37,7 +41,15 @@ public class AuthService {
 
         refreshTokenRepository.save(userRefreshToken);
 
+        log.info("accessToken : " + accessToken);
         return new JwtResponse(accessToken, refreshToken);
     }
 
+    public void logOut(Long userId) {
+        Boolean isExists = userRepository.existsByUserId(userId);
+        if(!isExists){
+            throw new UserNotFoundException();
+        }
+        refreshTokenRepository.deleteByUser_UserId(userId);
+    }
 }
