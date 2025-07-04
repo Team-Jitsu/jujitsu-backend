@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Role {
     TRAINEE("수련생"),
-    PLAYER("선수"),
+    TRAINER("선수"),
     ADMIN("관리자");
 
     private final String label;

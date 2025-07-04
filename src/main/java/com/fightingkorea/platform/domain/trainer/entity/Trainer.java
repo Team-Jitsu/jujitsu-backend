@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.domain.trainer.entity;
 
+import com.fightingkorea.platform.domain.trainer.dto.TrainerUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,7 @@ import lombok.*;
 public class Trainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int trainerId;
+    private Long trainerId;
 
     @OneToOne
     @JoinColumn(
@@ -38,9 +39,25 @@ public class Trainer {
     @Column(nullable = false)
     private Integer charge;
 
+    public static Trainer createTrainer(User user, String accountOwnerName, String accountNumber, String bio, Boolean automaticSettlement) {
+        return Trainer.builder()
+                .user(user)
+                .accountOwnerName(accountOwnerName)
+                .accountNumber(accountNumber)
+                .bio(bio)
+                .automaticSettlement(automaticSettlement)
+                .build();
+    }
+
+    public void updateInfo(TrainerUpdateRequest trainerUpdateRequest) {
+        this.accountOwnerName = trainerUpdateRequest.getAccountOwnerName();
+        this.accountNumber = trainerUpdateRequest.getAccountNumber();
+        this.bio = trainerUpdateRequest.getBio();
+        this.automaticSettlement = trainerUpdateRequest.getAutomaticSettlement();
+    }
+
     @PrePersist
     public void prePersist() {
         charge = 15;
-        automaticSettlement = false;
     }
 }
