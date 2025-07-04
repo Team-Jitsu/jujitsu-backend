@@ -1,7 +1,10 @@
 package com.fightingkorea.platform.domain.trainer.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "specialty")
@@ -12,7 +15,7 @@ public class Specialty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "specialty_id")
-    private String specialtyId;
+    private Long specialtyId;
 
     @Column(length = 100, nullable = false)
     private String specialtyName;

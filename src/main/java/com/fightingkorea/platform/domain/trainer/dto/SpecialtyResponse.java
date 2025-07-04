@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpecialtyResponse {
-    private String specialtyId;
+    private Long specialtyId;
 
     private String specialtyName;
 }

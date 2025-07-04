@@ -15,12 +15,22 @@ import lombok.NoArgsConstructor;
 @IdClass(TrainerSpecialtyId.class)
 public class TrainerSpecialty {
     @Id
-    @ManyToOne
-    @JoinColumn(name = "specialty_id")
-    private Specialty specialty;
+    @Column(name = "specialty_id")
+    private Long specialtyId;
 
     @Id
+    @Column(name = "trainer_id")
+    private Long trainerId;
+
+    @ManyToOne
+    @JoinColumn(name = "specialty_id", insertable = false, updatable = false)
+    private Specialty specialty;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trainer_id")
+    @JoinColumn(name = "trainer_id", insertable = false, updatable = false)
     private Trainer trainer;
+
+    public static TrainerSpecialty createTrainerSpecialty(Long specialtyId, Long trainerId) {
+        return new TrainerSpecialty(specialtyId, trainerId, null, null);
+    }
 }

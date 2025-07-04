@@ -2,7 +2,7 @@ package com.fightingkorea.platform.domain.user.service.impl;
 
 import com.fightingkorea.platform.domain.auth.repository.RefreshTokenRepository;
 import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
-import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
+import com.fightingkorea.platform.domain.user.dto.UserRegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
@@ -39,11 +39,11 @@ public class UserServiceImpl implements UserService {
     public UserResponse registerUser(UserRegisterRequest userRegisterRequest, Role role) {
         log.info("회원가입 시도: email={}, role={}", userRegisterRequest.getEmail(), role.name());
 
-        if (userRepository.existsByEmailAndIsActiveIsTrue(userRegisterRequest.getEmail())) {
-            log.warn("회원가입 실패 - 중복 이메일: {}", userRegisterRequest.getEmail());
+        if (Boolean.TRUE.equals(userRepository.existsByEmailAndIsActiveIsTrue(userRegisterRequest.getEmail()))) {
             throw new UserConflictException();
         }
 
+        userRegisterRequest.setPassword(passwordEncoder.encode(userRegisterRequest.getPassword()));
         User user = User.createUser(userRegisterRequest, role);
         userRepository.save(user);
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUser(Long userId, UserUpdateRequest userUpdateRequest) {
         User foundUser = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
         foundUser.updateUser(
                 userUpdateRequest.getAge(), userUpdateRequest.getSex(),
                 userUpdateRequest.getNickname(), userUpdateRequest.getRegion(),
@@ -71,14 +71,14 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(foundUser);
 
-        return ResponseMapper.toResponse(foundUser);
+        return ResponseMapper.toUserResponse(foundUser);
     }
 
     @Override
     public void deleteUser(Long userId) {
 
         User deleteTargetUser = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         deleteTargetUser.updateActive(true);
 
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public Page<User> getUsers(String nickname, Sex sex, Role role,
-                               LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable){
+                               LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable) {
 
         // 1. 날짜 범위 유효성 체크
         if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
@@ -131,10 +131,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(Long userId, PasswordUpdateRequest passwordUpdateRequest) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(()-> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         // 현재 비밀번호 검증 (유저가 진짜 본인인지 확인)
-        if (!passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), user.getPassword())){
+        if (!passwordEncoder.matches(passwordUpdateRequest.getCurrentPassword(), user.getPassword())) {
             throw new InvalidCurrentPasswordException();
         }
 
@@ -146,18 +146,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserInfo(Long userId) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
-        return ResponseMapper.toResponse(user);
+        return ResponseMapper.toUserResponse(user);
     }
 
     @Override
     public UserResponse updateUserActive(Long userId, Boolean isActive) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         user.updateActive(isActive);
-        return ResponseMapper.toResponse(user);
+        return ResponseMapper.toUserResponse(user);
     }
 
     private boolean containsForbiddenWords(String nickname) {

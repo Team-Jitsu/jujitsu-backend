@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Setter
 public class UserResponse {
 

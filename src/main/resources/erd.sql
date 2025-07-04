@@ -15,6 +15,15 @@ CREATE TABLE `users` (
                          INDEX (`is_active`)
 );
 
+CREATE TABLE `refresh_token` (
+                                 `refresh_token_id` BIGINT NOT NULL AUTO_INCREMENT,
+                                 `refresh_token` VARCHAR(200) NOT NULL,
+                                 `user_id` BIGINT NOT NULL,
+                                 PRIMARY KEY (`refresh_token_id`),
+                                 UNIQUE KEY `UK_user_id` (`user_id`),
+                                 FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`)
+);
+
 CREATE TABLE `admin_history` (
                                  `admin_history_id` bigint NOT NULL AUTO_INCREMENT,
                                  `user_id` bigint NOT NULL,

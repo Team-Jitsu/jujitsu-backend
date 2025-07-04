@@ -1,7 +1,7 @@
 package com.fightingkorea.platform.domain.user.controller;
 
 import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
-import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
+import com.fightingkorea.platform.domain.user.dto.UserRegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
@@ -29,7 +29,7 @@ public class UserController {
     /**
      * 수련생을 등록하는 메서드.
      *
-     * @param registerRequest
+     * @param userRegisterRequest
      * @return
      */
     @PostMapping("/register")
@@ -46,7 +46,7 @@ public class UserController {
      * @return
      */
     @PutMapping("/me")
-    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
+    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
         UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
         // JWT에서 꺼낸 현재 로그인 유저 ID
 
@@ -58,7 +58,7 @@ public class UserController {
     }
 
     /**
-     *  비밀번호를 업데이트하는 메서드입니다.
+     * 비밀번호를 업데이트하는 메서드입니다.
      *
      * @param passwordUpdateRequest
      * @return

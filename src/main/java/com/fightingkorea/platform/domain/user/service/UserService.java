@@ -1,7 +1,7 @@
 package com.fightingkorea.platform.domain.user.service;
 
 import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
-import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
+import com.fightingkorea.platform.domain.user.dto.UserRegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
@@ -21,7 +21,7 @@ public interface UserService {
      * @param role
      * @return
      */
-    UserResponse registerUser(RegisterRequest registerRequest, Role role)
+    UserResponse registerUser(UserRegisterRequest registerRequest, Role role);
 
     /**
      * 유저 정보를 수정합니다.

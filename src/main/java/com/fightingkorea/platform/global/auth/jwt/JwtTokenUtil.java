@@ -21,18 +21,15 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
+    // Access Token 유효 시간: 30분
+    private final static long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 30;
+    // Refresh Token 유효 시간: 7일
+    private final static long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 7;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
-
     // 토큰을 만들 때 사용할 비밀 키 (서버에서만 알고 있는 비밀번호 같은 것)
     private final String accessSecret = "HD2J8L2gPZTLOvnqS8u0KAYGuoqD0UCkNnkUE5wGflk="; // Access 토큰 서명용 키
     private final String refreshSecret = "HD2J8L2gPZTLOvnqS8u0KAYGuoqD0UCkNnkUE5wGflk="; //Refresh 토큰 서명용 키
-
-    // Access Token 유효 시간: 30분
-    private final static long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 30;
-
-    // Refresh Token 유효 시간: 7일
-    private final static long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 7;
 
     //Access Token 생성 : 유저 ID와 권한 정보를 넣어서 생성
     public String createAccessToken(String userId) {
@@ -111,7 +108,7 @@ public class JwtTokenUtil {
             throw new RuntimeException();
         }
 
-        String getRefreshTokenByUserId = refreshTokenRepository.findByUser_UserId(userId).getRefreshToken();
+        String getRefreshTokenByUserId = refreshTokenRepository.findByUser_UserId(userId).get().getRefreshToken();
 
         // 4. 저장된 refresh token과 비교
         if (!refreshToken.equals(getRefreshTokenByUserId)) {

@@ -17,10 +17,22 @@ import lombok.*;
 public final class RefreshToken {
 
     @Id
-    @Column(name = "refresh_token")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "refresh_token_id")
+    private Long refreshTokenId;
+
+    @Column(length = 200, nullable = false)
     private String refreshToken;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public static RefreshToken createRefreshToken(String refreshToken, User user) {
+        return new RefreshToken(null, refreshToken, user);
+    }
+
+    public void updateToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
