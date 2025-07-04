@@ -5,10 +5,14 @@ import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.entity.type.converter.RoleConverter;
 import com.fightingkorea.platform.domain.user.entity.type.converter.SexConverter;
+import com.fightingkorea.platform.domain.video.entity.UserVideo;
+import com.fightingkorea.platform.domain.video.entity.Video;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -56,6 +60,9 @@ public class User {
 
     @Column(length = 100)
     private String gymLocation; // 수련중인 체육관
+
+    @OneToMany(mappedBy = "user", cascade=CascadeType.ALL, orphanRemoval = true)
+    private List<UserVideo> userVideos = new ArrayList<>(); // 강의 구매 목록
 
     public static User createUser(UserRegisterRequest userRegisterRequest, Role role) {
         return User.builder()
