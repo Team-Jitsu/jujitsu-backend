@@ -44,6 +44,8 @@ public class UserServiceImpl implements UserService {
             throw new UserConflictException();
         }
 
+        registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
         User user = User.createUser(registerRequest, role);
         userRepository.save(user);
 

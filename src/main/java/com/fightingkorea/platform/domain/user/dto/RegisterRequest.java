@@ -3,8 +3,10 @@ package com.fightingkorea.platform.domain.user.dto;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class RegisterRequest {
 
     @NotBlank(message = "이메일은 필수입니다.")
