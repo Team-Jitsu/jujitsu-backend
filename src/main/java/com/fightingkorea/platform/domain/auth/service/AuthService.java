@@ -5,16 +5,16 @@ import com.fightingkorea.platform.domain.auth.dto.LoginRequest;
 import com.fightingkorea.platform.domain.auth.entity.RefreshToken;
 import com.fightingkorea.platform.domain.auth.repository.RefreshTokenRepository;
 import com.fightingkorea.platform.domain.user.entity.User;
-
 import com.fightingkorea.platform.domain.user.exception.UserNotFoundException;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
-import com.fightingkorea.platform.global.UserThreadLocal;
 import com.fightingkorea.platform.global.auth.jwt.JwtTokenUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,7 +28,7 @@ public class AuthService {
 
     public JwtResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmailAndIsActiveIsTrue(loginRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(RuntimeException::new);
 
         if (!passwordEncoder.matches(loginRequest.getUserPassword(), user.getPassword())) {
             throw new RuntimeException();
@@ -37,19 +37,25 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createAccessToken(loginRequest.getUserId());
         String refreshToken = jwtTokenProvider.createRefreshToken(loginRequest.getUserId());
 
-        RefreshToken userRefreshToken = new RefreshToken(refreshToken, user);
+        // 기존 refresh token 조회
+        Optional<RefreshToken> existingToken = refreshTokenRepository.findByUser_UserId(user.getUserId());
 
-        refreshTokenRepository.save(userRefreshToken);
+        if (existingToken.isPresent()) {
+            existingToken.get().updateToken(refreshToken); // setter 또는 별도 메서드 사용
+        } else {
+            refreshTokenRepository.save(RefreshToken.createRefreshToken(refreshToken, user));
+        }
 
-        log.info("accessToken : " + accessToken);
+        log.info("accessToken : {}", accessToken);
         return new JwtResponse(accessToken, refreshToken);
     }
 
+
     public void logOut(Long userId) {
-        Boolean isExists = userRepository.existsByUserId(userId);
-        if(!isExists){
+        if (Boolean.FALSE.equals(userRepository.existsByUserId(userId))) {
             throw new UserNotFoundException();
         }
+
         refreshTokenRepository.deleteByUser_UserId(userId);
     }
 }

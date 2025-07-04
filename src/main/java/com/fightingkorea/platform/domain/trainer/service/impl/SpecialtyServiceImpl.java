@@ -47,9 +47,9 @@ public class SpecialtyServiceImpl implements SpecialtyService {
         log.info("기존 전문 분야 삭제 완료, 트레이너 ID: {}", trainerId);
 
         List<TrainerSpecialty> trainerSpecialties = specialtyIds.stream()
-                .map(specialtyId -> new TrainerSpecialty(
-                        specialtyRepository.getReferenceById(specialtyId),
-                        trainerRepository.getReferenceById(trainerId)
+                .map(specialtyId -> TrainerSpecialty.createTrainerSpecialty(
+                        specialtyId,
+                        trainerId
                 ))
                 .toList();
 
