@@ -1,0 +1,19 @@
+package com.fightingkorea.platform.domain.trainer.dto;
+
+import com.fightingkorea.platform.domain.user.dto.UserResponse;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@NoArgsConstructor
+@AllArgsConstructor
+public class TrainerRegisterResponse {
+    private Long trainerId;
+
+    private Boolean automaticSettlement;
+
+    private List<Long> specialtyIds;
+
+    private UserResponse user;
+}

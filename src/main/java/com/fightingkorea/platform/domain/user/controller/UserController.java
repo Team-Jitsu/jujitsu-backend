@@ -1,6 +1,6 @@
 package com.fightingkorea.platform.domain.user.controller;
 
-import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
+import com.fightingkorea.platform.domain.user.dto.UserRegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
@@ -19,10 +19,10 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated RegisterRequest registerRequest) {
+    public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated UserRegisterRequest userRegisterRequest) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.registerUser(registerRequest, Role.TRAINEE));
+                .body(userService.registerUser(userRegisterRequest, Role.TRAINEE));
     }
 
     @PutMapping("/me")
