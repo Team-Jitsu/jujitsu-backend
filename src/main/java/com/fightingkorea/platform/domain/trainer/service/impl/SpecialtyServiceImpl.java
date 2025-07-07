@@ -6,7 +6,6 @@ import com.fightingkorea.platform.domain.trainer.entity.TrainerSpecialty;
 import com.fightingkorea.platform.domain.trainer.exception.SpecialtyConflictException;
 import com.fightingkorea.platform.domain.trainer.exception.SpecialtyNotFoundException;
 import com.fightingkorea.platform.domain.trainer.repository.SpecialtyRepository;
-import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerSpecialtyRepository;
 import com.fightingkorea.platform.domain.trainer.service.SpecialtyService;
 import com.fightingkorea.platform.domain.user.service.impl.ResponseMapper;
@@ -25,7 +24,6 @@ import java.util.List;
 public class SpecialtyServiceImpl implements SpecialtyService {
     private final SpecialtyRepository specialtyRepository;
     private final TrainerSpecialtyRepository trainerSpecialtyRepository;
-    private final TrainerRepository trainerRepository;
 
     // 전체 전문 분야 목록 조회
     @Transactional(readOnly = true)
@@ -61,8 +59,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     // 전문 분야 생성
     @Override
     public SpecialtyResponse createSpecialty(String specialtyName) {
-        if (specialtyRepository.existsBySpecialtyName(specialtyName)) {
-            log.warn("중복 전문 분야 등록 시도: {}", specialtyName);
+        if (Boolean.TRUE.equals(specialtyRepository.existsBySpecialtyName(specialtyName))) {
             throw new SpecialtyConflictException();
         }
 
@@ -77,7 +74,6 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     @Override
     public void deleteSpecialty(Long specialtyId) {
         if (!specialtyRepository.existsById(specialtyId)) {
-            log.warn("존재하지 않는 전문 분야 삭제 시도, ID: {}", specialtyId);
             throw new SpecialtyNotFoundException();
         }
 

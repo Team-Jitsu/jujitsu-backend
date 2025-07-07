@@ -39,6 +39,11 @@ public class UserController {
                 .body(userService.registerUser(userRegisterRequest, Role.TRAINEE));
     }
 
+    @GetMapping("/me")
+    public UserResponse getUser() {
+        return userService.getUserInfo(UserThreadLocal.getUserId());
+    }
+
     /**
      * 유저 정보를 업데이트 하는 메서드.
      *
@@ -47,14 +52,7 @@ public class UserController {
      */
     @PutMapping("/me")
     public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
-        UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
-        // JWT에서 꺼낸 현재 로그인 유저 ID
-
-        return userResponse;
-
-//        return ResponseEntity
-//                .ok(userResponse);
-
+        return userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
     }
 
     /**
