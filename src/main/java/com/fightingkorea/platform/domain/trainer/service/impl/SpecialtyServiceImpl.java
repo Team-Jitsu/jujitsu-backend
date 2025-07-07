@@ -8,7 +8,7 @@ import com.fightingkorea.platform.domain.trainer.exception.SpecialtyNotFoundExce
 import com.fightingkorea.platform.domain.trainer.repository.SpecialtyRepository;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerSpecialtyRepository;
 import com.fightingkorea.platform.domain.trainer.service.SpecialtyService;
-import com.fightingkorea.platform.domain.user.service.impl.ResponseMapper;
+import com.fightingkorea.platform.global.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
