@@ -16,7 +16,7 @@ import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.user.service.UserService;
-import com.fightingkorea.platform.domain.user.service.impl.ResponseMapper;
+import com.fightingkorea.platform.global.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;

@@ -8,6 +8,8 @@ import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
+import com.fightingkorea.platform.domain.video.entity.UserVideo;
+import com.fightingkorea.platform.domain.video.service.VideoService;
 import com.fightingkorea.platform.global.UserThreadLocal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 public class UserController {
 
     private final UserService userService;
+    private final VideoService videoService;
 
     /**
      * 수련생을 등록하는 메서드.
@@ -105,4 +108,12 @@ public class UserController {
             Pageable pageable) {
         return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
     }
+
+    // 강의 구매 내역을 조회하는 메서드
+    @GetMapping("/videos")
+    public Page<UserVideo> getVideos(){
+        return videoService.get
+    }
+
+
 }

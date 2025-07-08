@@ -1,4 +1,4 @@
-package com.fightingkorea.platform.domain.user.service.impl;
+package com.fightingkorea.platform.global.common.response;
 
 import com.fightingkorea.platform.domain.trainer.dto.SpecialtyResponse;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
@@ -7,6 +7,8 @@ import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.entity.TrainerSpecialty;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.entity.User;
+import com.fightingkorea.platform.domain.video.dto.VideoResponse;
+import com.fightingkorea.platform.domain.video.entity.Video;
 
 import java.util.List;
 
@@ -32,6 +34,15 @@ public class ResponseMapper {
                         .map(ts -> toSpecialtyResponse(ts.getSpecialty()))
                         .toList(),
                 ResponseMapper.toUserResponse(trainer.getUser())
+        );
+    }
+
+    public static VideoResponse toVideoResponse(Video video){
+        return new VideoResponse(
+                video.getVideoId(),
+                video.getTrainer().getTrainerId(),
+                video.getTitle(),
+                video.getUploadTime()
         );
     }
 }
