@@ -1,6 +1,7 @@
 package com.fightingkorea.platform.global.auth.jwt;
 
 import com.fightingkorea.platform.global.UserThreadLocal;
+import com.fightingkorea.platform.global.auth.detail.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             UserThreadLocal.setUserId(Long.parseLong(userId));
+            if (userDetails instanceof CustomUserDetails customDetails) {
+                UserThreadLocal.setTrainerId(customDetails.getTrainerId());
+            }
+
         }
 
         filterChain.doFilter(request, response);

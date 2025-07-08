@@ -5,14 +5,14 @@ POST http://localhost:8080/api/users/register
 Content-Type: application/json
 
 {
-  "email" : "wjdwldus1010@daum.com",
-  "password" : "wjdwldus9999uiui",
-  "age" : 17,
-  "sex" : "여자",
-  "region" : "김해",
-  "nickname" : "연어초밥",
-  "mobile_number" : "010-7777-8888",
-  "gymLocation" : "동상동"
+  "email": "wjdwldus1010@daum.com",
+  "password": "wjdwldus9999uiui",
+  "age": 17,
+  "sex": "여자",
+  "region": "김해",
+  "nickname": "연어초밥",
+  "mobile_number": "010-7777-8888",
+  "gymLocation": "동상동"
 }
 
 
@@ -22,7 +22,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3amR3bGR1czEwMTBAZGF1bS5jb20iLCJpYXQiOjE3NTE1OTUwMjMsImV4cCI6MTc1MTU5NjgyM30.bsfrzGC3oTr7D4EWqrxggBiUPBG59pQ6HPXWskyTpMI
 
 {
-  "role" : "선수"
+  "role": "선수"
 }
 
 ### 로그인
@@ -30,8 +30,8 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "user_id" : "wjdwldus1010@daum.com",
-  "user_password" : "wjdwldus9999uiui"
+  "user_id": "wjdwldus1010@daum.com",
+  "user_password": "wjdwldus9999uiui"
 }
 
 ### 로그아웃
@@ -61,5 +61,7 @@ PUT http://localhost:8080/api/admin/users/9
 
 
 ### trainer 회원 가입
-
+GET http://localhost:8080/api/users/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyIiwiaWF0IjoxNzUxODEyMDE4LCJleHAiOjE3NTE4MTM4MTh9.4IdWaHIHElDe76-NTiynlNSb3-sSdCPweZtvELU1i4s
 

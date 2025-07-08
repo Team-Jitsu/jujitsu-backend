@@ -33,6 +33,10 @@ public class GlobalResponseWrapper implements ResponseBodyAdvice<Object> {
             return body; // 이미 래핑된 경우 중복 래핑 방지
         }
 
+        if (body instanceof byte[] || MediaType.APPLICATION_OCTET_STREAM.equals(selectedContentType)) {
+            return body;
+        }
+
         String requestId = UUID.randomUUID().toString(); // 또는 MDC에서 추출 가능
         CommonResponse<Object> commonResponse = new CommonResponse<>(body, "req_" + requestId);
 
