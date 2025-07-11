@@ -19,6 +19,7 @@ public class Trainer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "trainer_id")
     private Long trainerId;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -44,7 +45,7 @@ public class Trainer {
     @Column(nullable = false)
     private Integer charge; // 수수료
 
-    @OneToMany(mappedBy = "trainer",cascade = CascadeType.ALL, orphanRemoval = true )
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true )
     private List<Video> videos = new ArrayList<>(); // 선수가 보유한 비디오 리스트
 
     public static Trainer createTrainer(User user, String accountOwnerName, String accountNumber, String bio, Boolean automaticSettlement) {

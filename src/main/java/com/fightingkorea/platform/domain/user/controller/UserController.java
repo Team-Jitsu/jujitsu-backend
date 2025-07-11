@@ -8,12 +8,15 @@ import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
+import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import com.fightingkorea.platform.global.UserThreadLocal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -109,8 +112,10 @@ public class UserController {
 
     // 강의 구매 내역을 조회하는 메서드
     @GetMapping("/videos")
-    public Page<UserVideo> getVideos(){
-        return videoService.get
+    public Page<UserVideoResponse> getPurchasedVideoList(
+           @PageableDefault(size=10, sort = "purchasedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return videoService.getPurchasedVideoList(UserThreadLocal.getUserId(), pageable);
     }
 
 
