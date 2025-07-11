@@ -1,14 +1,13 @@
-package com.fightingkorea.platform.domain.video.service;
+package com.fightingkorea.platform.domain.video.repository;
 
 import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
+import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
-public interface UserVideoService {
+public interface CustomUserVideoRepository {
 
-    // 페이징된 특정 유저의 강의 구매 리스트 조회
     Page<UserVideoResponse> getPurchasedVideoList(Long userId, Pageable pageable);
 
 }

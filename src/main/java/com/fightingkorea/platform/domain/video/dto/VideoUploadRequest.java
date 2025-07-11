@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class VideoRegisterRequest {
+public class VideoUploadRequest {
 
     @NotNull
     private Long trainerId; // 선수 아이디
@@ -22,4 +22,6 @@ public class VideoRegisterRequest {
     private String description; // 설명
 
     private Integer price; // 가격
+
+    private 카테고리..............................................................
 }

@@ -1,13 +1,11 @@
 package com.fightingkorea.platform.domain.video.entity;
 
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
-import com.fightingkorea.platform.domain.video.dto.VideoRegisterRequest;
+import com.fightingkorea.platform.domain.video.dto.VideoUploadRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "videos")
@@ -30,9 +28,6 @@ public class Video {
     )
     private Trainer trainer; // 업로더
 
-    @OneToMany(mappedBy = "video", cascade=CascadeType.ALL, orphanRemoval = true)
-    private List<UserVideo> userVideos = new ArrayList<>(); // 강의 구매자 목록
-
     @Column(length = 100, nullable = false)
     private String title; // 동영상 제목
 
@@ -42,16 +37,16 @@ public class Video {
     @Column(columnDefinition = "text")
     private String description; // 설명
 
-    @Column(name = "upload_time" , nullable = false)
+    @Column(nullable = false)
     private LocalDateTime uploadTime; // 업로드 시간
 
     @Column(nullable = false)
     private Integer price; // 가격
 
-    @Column(name = "likes_count")
-    private Integer likesCount = 0 ; // 좋아요
+    @Column
+    private Integer likesCount; // 좋아요
 
-    public static Video createVideo(VideoRegisterRequest req, Trainer trainer) {
+    public static Video createVideo(VideoUploadRequest req, Trainer trainer) {
         return Video
                 .builder()
                 .trainer(trainer)
@@ -75,17 +70,15 @@ public class Video {
 
 
     // 비디오 정보 업데이트
-    public void updateVideo(String title, String description, Integer price) {
+    public void updateVideo(String title, String description) {
         this.title = title;
         this.description = description;
-        this.price = price;
     }
 
     // 엔티티 저장 전 업로드 시간 자동 설정
     @PrePersist
     public void prePersist(){
         uploadTime = LocalDateTime.now();
+        likesCount = 0;
     }
-
-
 }

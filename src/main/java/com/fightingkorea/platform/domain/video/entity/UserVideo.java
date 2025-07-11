@@ -27,10 +27,10 @@ public class UserVideo { // 동영상 구매 테이블
     @JoinColumn(name = "video_id")
     private Video video; // 동영상 아이디
 
-    @Column(name = "purchase_price", nullable = false)
+    @Column (nullable = false)
     private Integer purchasePrice; // 구매 당시 가격
 
-    @Column(name = "purchased_at", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime purchasedAt; // 구매 날짜
 
 
