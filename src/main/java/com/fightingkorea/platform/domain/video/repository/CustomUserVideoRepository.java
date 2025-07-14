@@ -1,9 +1,7 @@
 package com.fightingkorea.platform.domain.video.repository;
 
 import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
-import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 public interface CustomUserVideoRepository {

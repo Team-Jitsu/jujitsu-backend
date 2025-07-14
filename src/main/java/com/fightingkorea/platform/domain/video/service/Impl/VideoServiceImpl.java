@@ -2,39 +2,50 @@ package com.fightingkorea.platform.domain.video.service.Impl;
 
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
-import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
+import com.fightingkorea.platform.domain.video.dto.*;
+import com.fightingkorea.platform.domain.video.entity.Category;
 import com.fightingkorea.platform.domain.video.exception.NotAuthorizedTrainerException;
 import com.fightingkorea.platform.domain.video.exception.UserVideoListNotFoundException;
 import com.fightingkorea.platform.domain.video.exception.VideoNotExistsException;
+import com.fightingkorea.platform.domain.video.repository.CategoryRepository;
 import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.global.UserThreadLocal;
 import com.fightingkorea.platform.global.common.response.ResponseMapper;
-import com.fightingkorea.platform.domain.video.dto.VideoUploadRequest;
-import com.fightingkorea.platform.domain.video.dto.VideoResponse;
-import com.fightingkorea.platform.domain.video.dto.VideoUpdateRequest;
 import com.fightingkorea.platform.domain.video.entity.Video;
 import com.fightingkorea.platform.domain.video.exception.VideoConflictException;
 import com.fightingkorea.platform.domain.video.repository.VideoRepository;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
     private final TrainerRepository trainerRepository;
     private final UserVideoRepository userVideoRepository;
 
+    public VideoServiceImpl(VideoRepository videoRepository, TrainerRepository trainerRepository,
+    UserVideoRepository userVideoRepository){
+        this.videoRepository = videoRepository;
+        this.trainerRepository = trainerRepository;
+        this.userVideoRepository = userVideoRepository;
+    }
+
+
+
     @Override
     public VideoResponse registerVideo(VideoUploadRequest req) {
+
         log.info("강의 등록 시도: title={}, trainerId={}", req.getTitle(), req.getTrainerId());
 
         Boolean isExist = videoRepository.existsByTitle(req.getTitle());

@@ -11,4 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpecialtyController {
     private final SpecialtyService specialtyService;
 
+    @PostMapping
+    public SpecialtyResponse 
+
+    @GetMapping
+    public 
+
 }

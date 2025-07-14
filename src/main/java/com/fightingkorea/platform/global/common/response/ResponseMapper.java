@@ -7,7 +7,9 @@ import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.entity.TrainerSpecialty;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.entity.User;
+import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
 import com.fightingkorea.platform.domain.video.dto.VideoResponse;
+import com.fightingkorea.platform.domain.video.entity.Category;
 import com.fightingkorea.platform.domain.video.entity.Video;
 
 import java.util.List;
@@ -43,6 +45,13 @@ public class ResponseMapper {
                 video.getTrainer().getTrainerId(),
                 video.getTitle(),
                 video.getUploadTime()
+        );
+    }
+
+    public static CategoryResponse toCategoryResponse(Category category) {
+        return new CategoryResponse(
+                category.getCategoryId(),
+                category.getCategoryName()
         );
     }
 }

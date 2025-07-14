@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+import java.util.List;
+
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class VideoUploadRequest {
 
@@ -23,5 +25,6 @@ public class VideoUploadRequest {
 
     private Integer price; // 가격
 
-    private 카테고리..............................................................
+    private List<Long> categoryIds; // 카테고리 아이디 리스트
+
 }
