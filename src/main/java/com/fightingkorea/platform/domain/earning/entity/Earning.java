@@ -3,10 +3,7 @@ package com.fightingkorea.platform.domain.earning.entity;
 import com.fightingkorea.platform.domain.earning.dto.CreateEarningRequest;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "earnings")
 @Builder
+@Getter
 public class Earning {
 
     @Id

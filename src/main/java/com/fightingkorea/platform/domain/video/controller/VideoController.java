@@ -15,11 +15,13 @@ public class VideoController {
 
     private final VideoService videoService;
 
+    // 비디오 업로드
     @PostMapping
     public VideoResponse uploadVideo(@RequestBody @Validated VideoUploadRequest req){
-        return videoService.registerVideo(req);
+        return videoService.uploadVideo(req);
     }
 
+    // 비디오 수정
     @PutMapping("/{video-id}")
     public VideoResponse updateVideo(
             @PathVariable ("video-id") Long videoId,

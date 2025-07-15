@@ -1,9 +1,10 @@
 package com.fightingkorea.platform.domain.video.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -15,4 +16,6 @@ public class VideoUpdateRequest {
     private String description;
 
     private Integer price;
+
+    private List<Long> categoryIds;
 }

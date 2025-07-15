@@ -9,11 +9,11 @@ import com.fightingkorea.platform.domain.video.repository.CategoryRepository;
 import com.fightingkorea.platform.domain.video.repository.VideoCategoryRepository;
 import com.fightingkorea.platform.domain.video.service.CategoryService;
 import com.fightingkorea.platform.global.common.response.ResponseMapper;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final VideoCategoryRepository videoCategoryRepository;
 
     // 전체 카테고리 목록 조회
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<CategoryResponse> getAllCategory() {
         List<Category> categories = categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "categoryName"));

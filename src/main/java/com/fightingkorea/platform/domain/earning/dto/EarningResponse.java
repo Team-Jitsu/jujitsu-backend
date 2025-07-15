@@ -9,4 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EarningResponse {
 
+    private Long earningId;
+
+    private Long trainerId;
+
+    private Long totalAmount;
+
+    private Boolean isSettled;
+
+    private Boolean requestSettlement;
 }

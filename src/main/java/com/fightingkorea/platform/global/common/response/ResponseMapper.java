@@ -1,5 +1,7 @@
 package com.fightingkorea.platform.global.common.response;
 
+import com.fightingkorea.platform.domain.earning.dto.EarningResponse;
+import com.fightingkorea.platform.domain.earning.entity.Earning;
 import com.fightingkorea.platform.domain.trainer.dto.SpecialtyResponse;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
 import com.fightingkorea.platform.domain.trainer.entity.Specialty;
@@ -53,5 +55,16 @@ public class ResponseMapper {
                 category.getCategoryId(),
                 category.getCategoryName()
         );
+    }
+
+    public static EarningResponse toEarningResponse(Earning earning) {
+        return new EarningResponse(
+                earning.getEarningId(),
+                earning.getTrainer().getTrainerId(),
+                earning.getTotalAmount(),
+                earning.getIsSettled(),
+                earning.getRequestSettlement()
+        );
+
     }
 }
