@@ -7,6 +7,7 @@ import java.util.List;
 
 @Getter
 public class TrainerRegisterRequest {
+
     private UserRegisterRequest userRegisterRequest;
 
     private String accountOwnerName;

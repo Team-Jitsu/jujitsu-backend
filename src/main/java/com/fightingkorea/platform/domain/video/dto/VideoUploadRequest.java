@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+import java.util.List;
+
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class VideoRegisterRequest {
+public class VideoUploadRequest {
 
     @NotNull
     private Long trainerId; // 선수 아이디
@@ -22,4 +24,7 @@ public class VideoRegisterRequest {
     private String description; // 설명
 
     private Integer price; // 가격
+
+    private List<Long> categoryIds; // 카테고리 아이디 리스트
+
 }

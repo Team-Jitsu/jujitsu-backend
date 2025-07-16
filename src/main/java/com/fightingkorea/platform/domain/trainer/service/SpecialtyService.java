@@ -5,6 +5,7 @@ import com.fightingkorea.platform.domain.trainer.dto.SpecialtyResponse;
 import java.util.List;
 
 public interface SpecialtyService {
+
     List<SpecialtyResponse> getAllSpecialty();
 
     void deleteSpecialty(Long specialtyId);
