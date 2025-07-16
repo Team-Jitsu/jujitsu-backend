@@ -1,16 +1,18 @@
 package com.fightingkorea.platform.domain.earning.entity;
 
+import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "earning_buffer")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,43 +20,38 @@ public class EarningBuffer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "buffer_id")
-    private Long bufferId; // 정산 버퍼 아이디
+    @Column(name = "buffer_id", nullable = false)
+    private Long bufferId;
 
-    @Column
-    private Long trainerId; // 선수 아이디
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trainer_id", nullable = false)
+    private Trainer trainer;
 
-    @ManyToOne
-    @JoinColumn(name = "user_videos_id")
-    private UserVideo userVideo; // 동영상 구매 아이디
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_videos_id", nullable = false)
+    private UserVideo userVideo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "earning_id")
-    private Earning earning; // 정산 내역 아이디
+    private Earning earning;
 
-    @Column
-    private Integer amount; // 수익
+    @Column(name = "amount", nullable = false)
+    private int amount;
 
-    @Column
-    private LocalDateTime createdAt; // 생성 일자
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    public static EarningBuffer createEarningBuffer(Trainer trainer, UserVideo userVideo, int amount) {
+        return EarningBuffer.
+                builder().
+                trainer(trainer).
+                userVideo(userVideo).
+                amount(amount).
+                build();
+    }
 
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
-
-    public void update(Long trainerId, Integer amount){
-        this.trainerId = trainerId;
-        this.amount = amount;
-    }
-
-    public static EarningBuffer createEarningBuffer(Long trainerId, UserVideo userVideo, Integer amount) {
-        return EarningBuffer
-                .builder()
-                .trainerId(trainerId)
-                .userVideo(userVideo)
-                .amount(amount)
-                .build();
-    }
-
 }

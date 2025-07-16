@@ -1,4 +1,4 @@
-package com.fightingkorea.platform.domain.earning.service.Impl;
+package com.fightingkorea.platform.domain.earning.service.impl;
 
 import com.fightingkorea.platform.domain.earning.dto.CreateEarningRequest;
 import com.fightingkorea.platform.domain.earning.dto.EarningResponse;
@@ -22,16 +22,15 @@ public class EarningServiceImpl implements EarningService {
     private final TrainerRepository trainerRepository;
     private final EarningRepository earningRepository;
     private final CustomEarningRepository customEarningRepository;
-    private final ResponseMapper responseMapper;
 
     @Override
     public EarningResponse createEarning(CreateEarningRequest req) {
         Trainer trainer = trainerRepository.findById(req.getTrainerId())
                 .orElseThrow(TrainerNotFoundException::new);
 
-       Earning earning = customEarningRepository.createEarningAndAssignToBuffers(trainer.getTrainerId());
+        Earning earning = customEarningRepository.createEarningAndAssignToBuffers(trainer.getTrainerId());
 
-       earningRepository.save(earning); // EarningResponse-mapper만들기
+        earningRepository.save(earning); // EarningResponse-mapper만들기
 
         return ResponseMapper.toEarningResponse(earning);
     }

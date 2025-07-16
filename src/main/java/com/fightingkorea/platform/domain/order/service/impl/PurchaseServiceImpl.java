@@ -1,6 +1,6 @@
 package com.fightingkorea.platform.domain.order.service.impl;
 
-import com.fightingkorea.platform.domain.earning.entitiy.EarningBuffer;
+import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.order.dto.TossPaymentResponse;
 import com.fightingkorea.platform.domain.order.dto.VideoPurchaseRequest;
