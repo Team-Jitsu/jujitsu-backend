@@ -3,6 +3,7 @@ package com.fightingkorea.platform.domain.video.entity;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.video.dto.VideoUploadRequest;
 import jakarta.persistence.*;
+
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -57,6 +58,7 @@ public class Video {
                 .likesCount(0)
                 .build();
     }
+
 
     // 동영상 경로 변경
     public void updateUrl(String url){

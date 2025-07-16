@@ -9,7 +9,6 @@ import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
 import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
-import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import com.fightingkorea.platform.global.UserThreadLocal;
 import lombok.RequiredArgsConstructor;

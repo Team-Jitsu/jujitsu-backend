@@ -4,18 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoUpdateRequest {
+public class CategoryResponse {
 
-    private String title;
+    private Long categoryId; // 카테고리 아이디
 
-    private String description;
+    private String categoryName; // 카테고리 이름
 
-    private Integer price;
 
-    private List<Long> categoryIds;
 }

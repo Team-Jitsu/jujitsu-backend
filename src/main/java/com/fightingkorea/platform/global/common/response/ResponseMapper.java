@@ -1,5 +1,7 @@
 package com.fightingkorea.platform.global.common.response;
 
+import com.fightingkorea.platform.domain.earning.dto.EarningResponse;
+import com.fightingkorea.platform.domain.earning.entity.Earning;
 import com.fightingkorea.platform.domain.trainer.dto.SpecialtyResponse;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
 import com.fightingkorea.platform.domain.trainer.entity.Specialty;
@@ -7,7 +9,9 @@ import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.entity.TrainerSpecialty;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.entity.User;
+import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
 import com.fightingkorea.platform.domain.video.dto.VideoResponse;
+import com.fightingkorea.platform.domain.video.entity.Category;
 import com.fightingkorea.platform.domain.video.entity.Video;
 
 import java.util.List;
@@ -44,5 +48,23 @@ public class ResponseMapper {
                 video.getTitle(),
                 video.getUploadTime()
         );
+    }
+
+    public static CategoryResponse toCategoryResponse(Category category) {
+        return new CategoryResponse(
+                category.getCategoryId(),
+                category.getCategoryName()
+        );
+    }
+
+    public static EarningResponse toEarningResponse(Earning earning) {
+        return new EarningResponse(
+                earning.getEarningId(),
+                earning.getTrainer().getTrainerId(),
+                earning.getTotalAmount(),
+                earning.getIsSettled(),
+                earning.getRequestSettlement()
+        );
+
     }
 }

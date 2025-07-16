@@ -106,8 +106,11 @@ public class TrainerServiceImpl implements TrainerService {
         Trainer trainer = trainerRepository.findById(trainerUpdateRequest.getTrainerId())
                 .orElseThrow(TrainerNotFoundException::new);
 
+
         // 정보 수정
         trainer.updateInfo(trainerUpdateRequest);
+        specialtyService.setTrainerSpecialties(trainer.getTrainerId(), trainerUpdateRequest.getSpecialtyIds());
+
         trainerRepository.save(trainer);
 
         log.info("트레이너 정보 수정 완료, 트레이너 ID: {}", trainerUpdateRequest.getTrainerId());
