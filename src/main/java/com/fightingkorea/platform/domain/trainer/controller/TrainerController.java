@@ -5,7 +5,7 @@ import com.fightingkorea.platform.domain.trainer.dto.TrainerRegisterResponse;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerUpdateRequest;
 import com.fightingkorea.platform.domain.trainer.service.TrainerService;
-import com.fightingkorea.platform.global.UserThreadLocal;
+import com.fightingkorea.platform.global.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +25,7 @@ public class TrainerController {
     // 트레이너 단건 조회
     @GetMapping("/me")
     public TrainerResponse getTrainer() {
-        return trainerService.getTrainer(UserThreadLocal.getTrainerId());
+        return trainerService.getTrainer(UserUtil.getTrainerId());
     }
 
     // 트레이너 정보 수정

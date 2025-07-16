@@ -10,7 +10,7 @@ import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
 import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
 import com.fightingkorea.platform.domain.video.service.VideoService;
-import com.fightingkorea.platform.global.UserThreadLocal;
+import com.fightingkorea.platform.global.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,7 +46,7 @@ public class UserController {
 
     @GetMapping("/me")
     public UserResponse getUser() {
-        return userService.getUserInfo(UserThreadLocal.getUserId());
+        return userService.getUserInfo(UserUtil.getUserId());
     }
 
     /**
@@ -57,7 +57,7 @@ public class UserController {
      */
     @PutMapping("/me")
     public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
-        return userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
+        return userService.updateUser(UserUtil.getUserId(), userUpdateRequest);
     }
 
     /**
@@ -68,7 +68,7 @@ public class UserController {
      */
     @PutMapping("/me/password")
     public ResponseEntity<Void> updatePassword(@RequestBody PasswordUpdateRequest passwordUpdateRequest) {
-        Long userId = UserThreadLocal.getUserId(); // JWT에서 꺼낸 유저 ID
+        Long userId = UserUtil.getUserId(); // JWT에서 꺼낸 유저 ID
 
         userService.updatePassword(userId, passwordUpdateRequest);
 
@@ -82,7 +82,7 @@ public class UserController {
      */
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser() {
-        userService.deleteUser(UserThreadLocal.getUserId()); //JWT 에서 꺼낸 userId 사용
+        userService.deleteUser(UserUtil.getUserId()); //JWT 에서 꺼낸 userId 사용
 
         return ResponseEntity.noContent().build();
     }
@@ -112,9 +112,9 @@ public class UserController {
     // 강의 구매 내역을 조회하는 메서드
     @GetMapping("/videos")
     public Page<UserVideoResponse> getPurchasedVideoList(
-           @PageableDefault(size=10, sort = "purchasedAt", direction = Sort.Direction.DESC) Pageable pageable
+            @PageableDefault(size = 10, sort = "purchasedAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return videoService.getPurchasedVideoList(UserThreadLocal.getUserId(), pageable);
+        return videoService.getPurchasedVideoList(UserUtil.getUserId(), pageable);
     }
 
 

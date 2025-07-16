@@ -3,7 +3,7 @@ package com.fightingkorea.platform.domain.auth.controller;
 import com.fightingkorea.platform.domain.auth.dto.JwtResponse;
 import com.fightingkorea.platform.domain.auth.dto.LoginRequest;
 import com.fightingkorea.platform.domain.auth.service.AuthService;
-import com.fightingkorea.platform.global.UserThreadLocal;
+import com.fightingkorea.platform.global.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +26,6 @@ public class AuthController {
 
     @PostMapping("/logout")
     public void logOut(){
-       authService.logOut(UserThreadLocal.getUserId());
+       authService.logOut(UserUtil.getUserId());
     }
 }
