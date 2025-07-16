@@ -3,15 +3,16 @@ package com.fightingkorea.platform.domain.earning.entitiy;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "earning_buffer")
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class EarningBuffer {
 
     @Id
@@ -36,4 +37,18 @@ public class EarningBuffer {
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    public static EarningBuffer createEarningBuffer(Trainer trainer, UserVideo userVideo, int amount) {
+        return EarningBuffer.
+                builder().
+                trainer(trainer).
+                userVideo(userVideo).
+                amount(amount).
+                build();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

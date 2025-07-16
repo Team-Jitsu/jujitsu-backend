@@ -3,8 +3,10 @@ package com.fightingkorea.platform.domain.order.entity;
 import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
@@ -12,7 +14,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "orders")
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Order {
 
     @Id
@@ -36,9 +40,6 @@ public class Order {
     @Comment("결제 완료시 받는 key")
     private String paymentKey;
 
-    @Column(name = "paid_at")
-    private LocalDateTime paidAt;
-
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -49,4 +50,29 @@ public class Order {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_videos_id")
     private UserVideo userVideo;
+
+    public static Order createOrder(String tossOrderId,
+                                    int amount,
+                                    OrderStatus orderStatus,
+                                    String paymentKey,
+                                    User user,
+                                    UserVideo userVideo) {
+        return Order.builder()
+                .tossOrderId(tossOrderId)
+                .status(orderStatus)
+                .amount(amount)
+                .paymentKey(paymentKey)
+                .user(user)
+                .userVideo(userVideo)
+                .build();
+    }
+
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        this.status = orderStatus;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

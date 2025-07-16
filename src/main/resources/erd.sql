@@ -103,7 +103,6 @@ CREATE TABLE `orders` (
                           `amount`	int	NOT NULL,
                           `status`	enum	NOT NULL,
                           `payment_key`	VARCHAR(200)	NULL	COMMENT '결제 완료시 받는 key',
-                          `paid_at`	DATETIME	NULL,
                           `created_at`	DATETIME	NOT NULL,
                           `user_id`	bigint	NOT NULL	COMMENT 'autoincrement',
                           `user_videos_id`	bigint	NULL	COMMENT 'autoincrement'
