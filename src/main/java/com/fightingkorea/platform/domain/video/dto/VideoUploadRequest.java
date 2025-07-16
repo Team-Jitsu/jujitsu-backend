@@ -24,7 +24,6 @@ public class VideoUploadRequest {
     private String description; // 설명
 
     private Integer price; // 가격
-
+  
     private List<Long> categoryIds; // 카테고리 아이디 리스트
-
 }
