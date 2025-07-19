@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.domain.earning.entity;
 
+import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,10 +22,11 @@ public class EarningBuffer {
     @Column(name = "buffer_id")
     private Long bufferId; // 정산 버퍼 아이디
 
-    @Column
-    private Long trainerId; // 선수 아이디
-
     @ManyToOne
+    @JoinColumn(name = "trainer_id")
+    private Trainer trainer; // 선수 아이디
+
+    @OneToOne
     @JoinColumn(name = "user_videos_id")
     private UserVideo userVideo; // 동영상 구매 아이디
 
@@ -43,15 +45,15 @@ public class EarningBuffer {
         this.createdAt = LocalDateTime.now();
     }
 
-    public void update(Long trainerId, Integer amount){
-        this.trainerId = trainerId;
+    public void update(Trainer trainer, Integer amount){
+        this.trainer = trainer;
         this.amount = amount;
     }
 
-    public static EarningBuffer createEarningBuffer(Long trainerId, UserVideo userVideo, Integer amount) {
+    public static EarningBuffer createEarningBuffer(Trainer trainer, UserVideo userVideo, Integer amount) {
         return EarningBuffer
                 .builder()
-                .trainerId(trainerId)
+                .trainer(trainer)
                 .userVideo(userVideo)
                 .amount(amount)
                 .build();

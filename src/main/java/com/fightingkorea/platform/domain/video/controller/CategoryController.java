@@ -3,7 +3,6 @@ package com.fightingkorea.platform.domain.video.controller;
 import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
 import com.fightingkorea.platform.domain.video.service.CategoryService;
 import com.fightingkorea.platform.domain.video.dto.VideoCategoryResponse;
-import com.fightingkorea.platform.domain.video.service.VideoCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

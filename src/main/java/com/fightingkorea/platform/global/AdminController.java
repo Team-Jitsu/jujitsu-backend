@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.global;
 
+import com.fightingkorea.platform.domain.earning.service.EarningService;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
 import com.fightingkorea.platform.domain.trainer.service.TrainerService;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
@@ -22,6 +23,7 @@ public class AdminController {
 
     private final UserService userService;
     private final TrainerService trainerService;
+    private final EarningService earningService;
 
     /**
      * 전체 유저 목록을 조회하는 메서드.
@@ -76,6 +78,15 @@ public class AdminController {
     public PageImpl<TrainerResponse> getTrainers(Pageable pageable) {
 
         return trainerService.getTrainers(pageable);
+    }
+
+    // 1) 트레이너가 출금 신청한 건 지급해주는 로직
+    // 2) 매월 일정한 날짜에 earningBuffer-> earning으로 옮겨서 지급해주는 로직
+
+    // 정산
+    @PostMapping("/settle")
+    public void settleEarningsByAdmin(@RequestBody SettleRequest req) {
+        earningService.settleEarningsByAdmin(req, );
     }
 
 

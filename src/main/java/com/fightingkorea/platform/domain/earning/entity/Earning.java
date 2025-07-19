@@ -2,10 +2,13 @@ package com.fightingkorea.platform.domain.earning.entity;
 
 import com.fightingkorea.platform.domain.earning.dto.CreateEarningRequest;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
+import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -24,10 +27,13 @@ public class Earning {
     @JoinColumn(name = "trainer_id")
     private Trainer trainer; // 선수 아이디
 
+    @OneToMany(mappedBy = "earning")
+    private List<EarningBuffer> earningBuffers = new ArrayList<>(); // 정산 버퍼 리스트
+
     @Column
     private Long totalAmount; // 수익 합계
 
-    @Column
+    @Column(default = false)
     private Boolean isSettled; // 정산 여부
 
     @Column
