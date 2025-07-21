@@ -1,17 +1,21 @@
 package com.fightingkorea.platform.domain.user.controller;
 
 import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
-import com.fightingkorea.platform.domain.user.dto.RegisterRequest;
+import com.fightingkorea.platform.domain.user.dto.UserRegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
-import com.fightingkorea.platform.global.UserThreadLocal;
+import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
+import com.fightingkorea.platform.domain.video.service.VideoService;
+import com.fightingkorea.platform.global.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,18 +29,24 @@ import java.time.LocalDateTime;
 public class UserController {
 
     private final UserService userService;
+    private final VideoService videoService;
 
     /**
      * 수련생을 등록하는 메서드.
      *
-     * @param registerRequest
+     * @param userRegisterRequest
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated RegisterRequest registerRequest) {
+    public ResponseEntity<UserResponse> registerTrainee(@RequestBody @Validated UserRegisterRequest userRegisterRequest) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.registerUser(registerRequest, Role.TRAINEE));
+                .body(userService.registerUser(userRegisterRequest, Role.TRAINEE));
+    }
+
+    @GetMapping("/me")
+    public UserResponse getUser() {
+        return userService.getUserInfo(UserUtil.getUserId());
     }
 
     /**
@@ -46,26 +56,19 @@ public class UserController {
      * @return
      */
     @PutMapping("/me")
-    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
-        UserResponse userResponse = userService.updateUser(UserThreadLocal.getUserId(), userUpdateRequest);
-        // JWT에서 꺼낸 현재 로그인 유저 ID
-
-        return userResponse;
-
-//        return ResponseEntity
-//                .ok(userResponse);
-
+    public UserResponse updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
+        return userService.updateUser(UserUtil.getUserId(), userUpdateRequest);
     }
 
     /**
-     *  비밀번호를 업데이트하는 메서드입니다.
+     * 비밀번호를 업데이트하는 메서드입니다.
      *
      * @param passwordUpdateRequest
      * @return
      */
     @PutMapping("/me/password")
     public ResponseEntity<Void> updatePassword(@RequestBody PasswordUpdateRequest passwordUpdateRequest) {
-        Long userId = UserThreadLocal.getUserId(); // JWT에서 꺼낸 유저 ID
+        Long userId = UserUtil.getUserId(); // JWT에서 꺼낸 유저 ID
 
         userService.updatePassword(userId, passwordUpdateRequest);
 
@@ -79,7 +82,7 @@ public class UserController {
      */
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteUser() {
-        userService.deleteUser(UserThreadLocal.getUserId()); //JWT 에서 꺼낸 userId 사용
+        userService.deleteUser(UserUtil.getUserId()); //JWT 에서 꺼낸 userId 사용
 
         return ResponseEntity.noContent().build();
     }
@@ -89,6 +92,7 @@ public class UserController {
      *
      * @param name
      * @param sex
+     * @param role
      * @param fromDate
      * @param toDate
      * @param pageable
@@ -98,9 +102,20 @@ public class UserController {
     public Page<User> getUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Sex sex,
+            @RequestParam(required = false) Role role,
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             Pageable pageable) {
-        return userService.getUsers(name, sex, fromDate, toDate, pageable);
+        return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
     }
+
+    // 강의 구매 내역을 조회하는 메서드
+    @GetMapping("/videos")
+    public Page<UserVideoResponse> getPurchasedVideoList(
+            @PageableDefault(size = 10, sort = "purchasedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return videoService.getPurchasedVideoList(UserUtil.getUserId(), pageable);
+    }
+
+
 }
