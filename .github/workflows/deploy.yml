@@ -18,8 +18,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build with Gradle
-        run: ./gradlew clean build
+      - name: Build with Maven (skip tests)
+        run: mvn clean package -DskipTests
 
       - name: Copy JAR to server
         uses: appleboy/scp-action@v0.1.4
@@ -28,5 +28,5 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
           port: 22
-          source: build/libs/*.jar
+          source: target/*.jar
           target: /home/ubuntu/app
