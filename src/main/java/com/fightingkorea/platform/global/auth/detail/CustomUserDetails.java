@@ -1,6 +1,7 @@
 package com.fightingkorea.platform.global.auth.detail;
 
 import lombok.Getter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

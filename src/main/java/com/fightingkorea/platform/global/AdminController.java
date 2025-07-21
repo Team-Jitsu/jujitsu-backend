@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.global;
 
+import com.fightingkorea.platform.domain.earning.dto.SettleRequest;
 import com.fightingkorea.platform.domain.earning.service.EarningService;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
 import com.fightingkorea.platform.domain.trainer.service.TrainerService;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -35,6 +38,7 @@ public class AdminController {
      * @param pageable
      * @return
      */
+    @PreAuthorize("ROLE_ADMIN")
     @GetMapping("/users")
     public Page<User> getUsers(
             @RequestParam(required = false) String name,
@@ -53,6 +57,7 @@ public class AdminController {
      * @param userId
      * @return
      */
+    @PreAuthorize("ROLE_ADMIN")
     @GetMapping("/users/{user-id}")
     public UserResponse getUserInfo(@PathVariable("user-id") Long userId) {
         UserResponse userResponse = userService.getUserInfo(userId);
@@ -66,27 +71,30 @@ public class AdminController {
      * @param isActive
      * @return
      */
+    @PreAuthorize("ROLE_ADMIN")
     @PutMapping("/users/{user-id}")
-    public UserResponse updateUserActive(@PathVariable("user-id") Long userId, @RequestParam Boolean isActive) {
+    public UserResponse updateUserActive(@PathVariable("user-id") Long userId,
+                                         @RequestParam Boolean isActive) {
         UserResponse userResponse = userService.updateUserActive(userId, isActive);
 
         return userResponse;
     }
 
     // 트레이너 목록 조회 (페이징)
+    @PreAuthorize("ROLE_ADMIN")
     @GetMapping("/trainers")
-    public PageImpl<TrainerResponse> getTrainers(Pageable pageable) {
+    public PageImpl<TrainerResponse> getTrainers(@RequestParam Pageable pageable) {
 
         return trainerService.getTrainers(pageable);
     }
 
-    // 1) 트레이너가 출금 신청한 건 지급해주는 로직
-    // 2) 매월 일정한 날짜에 earningBuffer-> earning으로 옮겨서 지급해주는 로직
 
     // 정산
+    @Secured("ROLE_ADMIN")
     @PostMapping("/settle")
-    public void settleEarningsByAdmin(@RequestBody SettleRequest req) {
-        earningService.settleEarningsByAdmin(req, );
+    public void settleEarningsByAdmin(@RequestBody SettleRequest req,
+                                      @RequestParam Long trainerId) {
+        earningService.settleEarningsByAdmin(req, trainerId);
     }
 
 

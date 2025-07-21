@@ -13,4 +13,8 @@ public interface EarningBufferRepository extends JpaRepository<EarningBuffer, Lo
 
     // earning이 null인 리스트에서 파라미터 값으로 주어진 Trainer로 찾기
     List<EarningBuffer> findByTrainerAndEarningIsNull(Trainer trainer);
+
+    List<EarningBuffer> findByTrainerAndEarningIsNotNull(Long trainerId);
+
+    boolean existsByTrainerIdAndEarningIsNull(Long trainerId);
 }

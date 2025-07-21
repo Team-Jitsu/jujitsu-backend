@@ -3,10 +3,7 @@ package com.fightingkorea.platform.domain.earning.entity;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Comment;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class EarningBuffer {
 
     @Id

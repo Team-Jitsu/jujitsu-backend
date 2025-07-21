@@ -4,10 +4,7 @@ import com.fightingkorea.platform.domain.earning.dto.CreateEarningRequest;
 import com.fightingkorea.platform.domain.earning.dto.EarningResponse;
 import com.fightingkorea.platform.domain.earning.service.EarningService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,12 +14,8 @@ public class EarningController { //관리자용 (정산 내역 조회, 정산 �
     private final EarningService earningService;
 
     @PostMapping
-    public EarningResponse createEarning(CreateEarningRequest req){
-        return earningService.createEarning(req);
+    public EarningResponse createEarning(@RequestParam Long trainerId){
+        return earningService.createEarning(trainerId);
     }
 
-    @PutMapping("/settle") // 관리자가 수동으로 확정 버튼 누르는 시나리오
-    public EarningResponse settleEarnings(){
-        return earningService.settleAllEarnings();
-    }
 }
