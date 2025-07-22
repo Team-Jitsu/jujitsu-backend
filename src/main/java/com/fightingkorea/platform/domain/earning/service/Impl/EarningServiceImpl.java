@@ -1,12 +1,9 @@
 package com.fightingkorea.platform.domain.earning.service.Impl;
 
-import com.fightingkorea.platform.domain.earning.dto.CreateEarningRequest;
 import com.fightingkorea.platform.domain.earning.dto.EarningBufferResponse;
 import com.fightingkorea.platform.domain.earning.dto.EarningResponse;
-import com.fightingkorea.platform.domain.earning.dto.SettleRequest;
 import com.fightingkorea.platform.domain.earning.entity.Earning;
 import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
-import com.fightingkorea.platform.domain.earning.exception.BufferEmptyException;
 import com.fightingkorea.platform.domain.earning.exception.NoEarningBufferToSettleException;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.earning.repository.EarningRepository;
@@ -16,16 +13,16 @@ import com.fightingkorea.platform.domain.earning.service.EarningService;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.exception.TrainerNotFoundException;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
-import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.global.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Transactional
@@ -91,20 +88,26 @@ private Earning createAndAssignEarningsOrThrow(Long trainerId) {
     // admin이 확인 버튼 누름
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public void settleEarningsByAdmin(SettleRequest req, Long trainerId) {
+    public void settleEarningsByAdmin(Long trainerId) {
 
-        Earning earning = createAndAssignEarningsOrThrow(trainerId);
+        Earning earning = earningRepository.getReferenceById(trainerId);
         earning.setIsSettled(true);
         earning.setRequestSettlement(false);
         earning.setCompleteSettlementAt(LocalDateTime.now());
+
         earningRepository.save(earning);
-
-
     }
 
-    @Override // 트레이너 or admin이 trainer의 정산리스트 알고자 할때
-    public List<EarningBufferResponse> getEarningBufferList(Long trainerId) {
-        return List.of();
+    @Override // 트레이너 or admin이 trainer의 판매 내역을 알고자 할 때
+    public Page<EarningBufferResponse> getEarningBufferList(Long trainerId, Pageable pageable) {
+        Page<EarningBuffer> buffers = earningBufferRepository.findByTrainer(trainerId, pageable);
+        return buffers.map(ResponseMapper::toEarningBufferResponse);
     }
 
+    // 트레이너 or admin이 trainer의 정산 요청 상세 리스트 알고자 할때
+    @Override
+    public Page<EarningResponse> getEarningList(Long trainerId, Pageable pageable) {
+        Page<Earning> earnings = earningRepository.findByTrainer(trainerId, pageable);
+        return earnings.map(ResponseMapper::toEarningResponse);
+    }
 }
