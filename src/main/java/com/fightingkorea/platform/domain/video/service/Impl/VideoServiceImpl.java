@@ -3,19 +3,21 @@ package com.fightingkorea.platform.domain.video.service.Impl;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
-import com.fightingkorea.platform.domain.video.dto.*;
+import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
+import com.fightingkorea.platform.domain.video.dto.VideoResponse;
+import com.fightingkorea.platform.domain.video.dto.VideoUpdateRequest;
+import com.fightingkorea.platform.domain.video.dto.VideoUploadRequest;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
+import com.fightingkorea.platform.domain.video.entity.Video;
 import com.fightingkorea.platform.domain.video.exception.*;
 import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
-import com.fightingkorea.platform.domain.video.service.CategoryService;
-import com.fightingkorea.platform.global.UserThreadLocal;
-import com.fightingkorea.platform.global.common.response.ResponseMapper;
-import com.fightingkorea.platform.domain.video.entity.Video;
 import com.fightingkorea.platform.domain.video.repository.VideoRepository;
+import com.fightingkorea.platform.domain.video.service.CategoryService;
 import com.fightingkorea.platform.domain.video.service.VideoService;
+import com.fightingkorea.platform.global.UserUtil;
+import com.fightingkorea.platform.global.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class VideoServiceImpl implements VideoService {
 
         Boolean isExist = videoRepository.existsByTitle(req.getTitle());
 
-        if(isExist){
+        if (isExist) {
             throw new VideoConflictException();
         }
 
@@ -61,11 +63,11 @@ public class VideoServiceImpl implements VideoService {
         Video video = videoRepository.findVideoByVideoId(videoId)
                 .orElseThrow(VideoNotExistsException::new);
 
-        Long currentTrainerId = UserThreadLocal.getTrainerId();
+        Long currentTrainerId = UserUtil.getTrainerId();
         Long videoTrainerId = video.getTrainer().getTrainerId();
 
         // video는 업로더만 수정할 수 있게. 그러면 jwt에 있는 trainerId를 가지고 와서 video.trainerId를 비교.
-        if(!currentTrainerId.equals(videoTrainerId)){
+        if (!currentTrainerId.equals(videoTrainerId)) {
             throw new NotAuthorizedTrainerException();
         }
 
@@ -85,11 +87,11 @@ public class VideoServiceImpl implements VideoService {
                 .orElseThrow(VideoNotExistsException::new);
 
         // 해당 업로더가 맞는지 확인
-        Long currentTrainerId = UserThreadLocal.getTrainerId();
+        Long currentTrainerId = UserUtil.getTrainerId();
 
         // 비디오 업로더와 현재 로그인한 사용자가 일치하는지 확인
         Boolean isEqual = currentTrainerId.equals(video.getTrainer().getTrainerId());
-        if(!isEqual){
+        if (!isEqual) {
             throw new NotAuthorizedTrainerException();
         }
 
@@ -106,11 +108,11 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public Page<UserVideoResponse> getPurchasedVideoList(Long userId, Pageable pageable) {
 
-        log.info("강의 구매 목록 조회 시도: userId={}", UserThreadLocal.getUserId());
+        log.info("강의 구매 목록 조회 시도: userId={}", UserUtil.getUserId());
 
         Page<UserVideoResponse> userVideoResponses = userVideoRepository.getPurchasedVideoList(userId, pageable);
 
-        if(userVideoResponses.isEmpty()) {
+        if (userVideoResponses.isEmpty()) {
             log.info("userId{} 가 구매한 강의 없음", userId);
             throw new UserVideoListNotFoundException();
         }
@@ -124,8 +126,8 @@ public class VideoServiceImpl implements VideoService {
     // 구매 내역 삭제(환불)
     public void deletePurchasedContent(Long userVideoId) {
 
-        Long currentUserId = UserThreadLocal.getUserId();
-        log.info("강의 구매 취소 시도: userVideoId={}, userId={}", userVideoId, UserThreadLocal.getUserId());
+        Long currentUserId = UserUtil.getUserId();
+        log.info("강의 구매 취소 시도: userVideoId={}, userId={}", userVideoId, UserUtil.getUserId());
 
         UserVideo userVideo = userVideoRepository.findById(userVideoId)
                 .orElseThrow(UserVideoNotFoundException::new);
@@ -134,7 +136,7 @@ public class VideoServiceImpl implements VideoService {
 
         Boolean isEqual = userVideo.getUser().getUserId().equals(currentUserId);
 
-        if(!isEqual){
+        if (!isEqual) {
             throw new NotAuthorizedUserException();
         }
 

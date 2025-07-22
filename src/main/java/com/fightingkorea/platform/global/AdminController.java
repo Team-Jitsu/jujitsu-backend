@@ -50,7 +50,6 @@ public class AdminController {
         return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
     }
 
-
     /**
      * 특정 유저의 정보를 조회하는 메서드입니다.
      *
@@ -88,15 +87,11 @@ public class AdminController {
         return trainerService.getTrainers(pageable);
     }
 
-
     // 정산
     @Secured("ROLE_ADMIN")
     @PostMapping("/settle")
-    public void settleEarningsByAdmin(@RequestBody SettleRequest req,
-                                      @RequestParam Long trainerId) {
-        earningService.settleEarningsByAdmin(req, trainerId);
+    public void settleEarningsByAdmin(@RequestParam Long trainerId) {
+        earningService.settleEarningsByAdmin(trainerId);
     }
-
-
 
 }

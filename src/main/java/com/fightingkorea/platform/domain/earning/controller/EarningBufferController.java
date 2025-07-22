@@ -3,6 +3,10 @@ package com.fightingkorea.platform.domain.earning.controller;
 import com.fightingkorea.platform.domain.earning.dto.EarningBufferResponse;
 import com.fightingkorea.platform.domain.earning.service.EarningBufferService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +26,14 @@ public class EarningBufferController { //관리자용
         return earningBufferService.createEarningBuffer(trainerId, userVideoId, amount);
     }
 
-    // 선수가 이번달 정산 예정인 금액 확인, 관리자도 사용
-    @GetMapping
-    public List<EarningBufferResponse> getEarningBufferList(@RequestParam Long trainerId) {
-        return earningBufferService.getEarningBufferList(trainerId);
+    // 트레이너 or admin이 trainer의 판매 내역을 알고자 할 때
+    @GetMapping("/buffer-list")
+    public Page<EarningBufferResponse> getEarningBuffers(
+            @RequestParam Long trainerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+            ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return earningBufferService.getEarningBufferList(trainerId, pageable);
     }
 }
