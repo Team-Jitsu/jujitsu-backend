@@ -24,7 +24,7 @@ public class CustomEarningRepository {
         Long totalAmount = queryFactory
                 .select(eb.amount.sum().longValue())
                 .from(eb)
-                .where(eb.trainer.trainerId.eq(trainerId)
+                .where(eb.trainerId.eq(trainerId)
                         .and(eb.earning.isNull()))
                 .fetchOne();
 
@@ -48,7 +48,7 @@ public class CustomEarningRepository {
         queryFactory
                 .update(eb)
                 .set(eb.earning, earning)
-                .where(eb.trainer.trainerId.eq(trainerId)
+                .where(eb.trainerId.eq(trainerId)
                         .and(eb.earning.isNull()))
                 .execute();
 

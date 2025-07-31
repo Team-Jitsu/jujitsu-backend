@@ -2,6 +2,7 @@ package com.fightingkorea.platform.domain.earning.service;
 
 
 import com.fightingkorea.platform.domain.earning.dto.EarningResponse;
+import com.fightingkorea.platform.domain.earning.dto.SettleRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
