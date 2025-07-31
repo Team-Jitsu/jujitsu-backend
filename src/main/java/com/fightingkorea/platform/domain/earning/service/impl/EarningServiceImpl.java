@@ -41,9 +41,9 @@ public class EarningServiceImpl implements EarningService, EarningBufferService 
         Trainer trainer = trainerRepository.findById(trainerId)
                 .orElseThrow(TrainerNotFoundException::new);
 
-       Earning earning = customEarningRepository.createEarningAndAssignToBuffers(trainerId);
+        Earning earning = customEarningRepository.createEarningAndAssignToBuffers(trainerId);
 
-       earningRepository.save(earning);
+        earningRepository.save(earning);
 
         return ResponseMapper.toEarningResponse(earning);
     }
@@ -53,28 +53,28 @@ public class EarningServiceImpl implements EarningService, EarningBufferService 
     // 동영상 구매 시에 생성되는 정산 버퍼
     @Override
     public EarningBufferResponse createEarningBuffer(Long trainerId, Long userVideoId, Integer amount) {
-       EarningBuffer buffer = EarningBuffer.createEarningBuffer(
-               trainerRepository.getReferenceById(trainerId),
-               userVideoRepository.getReferenceById(userVideoId), amount);
-       earningBufferRepository.save(buffer);
-       return ResponseMapper.toEarningBufferResponse(buffer);
+        EarningBuffer buffer = EarningBuffer.createEarningBuffer(
+                trainerRepository.getReferenceById(trainerId),
+                userVideoRepository.getReferenceById(userVideoId), amount);
+        earningBufferRepository.save(buffer);
+        return ResponseMapper.toEarningBufferResponse(buffer);
     }
 
-private Earning createAndAssignEarningsOrThrow(Long trainerId) {
-    //1. 트레이너 존재 검증
-    Trainer trainer = trainerRepository.findById(trainerId)
-            .orElseThrow(TrainerNotFoundException::new);
+    private Earning createAndAssignEarningsOrThrow(Long trainerId) {
+        //1. 트레이너 존재 검증
+        Trainer trainer = trainerRepository.findById(trainerId)
+                .orElseThrow(TrainerNotFoundException::new);
 
-    // 2. 정산할 earningBuffer가 있는지 검증
-    boolean hasUnSettledBuffer = earningBufferRepository.existsByTrainerIdAndEarningIsNull(trainerId);
-    if (!hasUnSettledBuffer) {
-        throw new NoEarningBufferToSettleException();
+        // 2. 정산할 earningBuffer가 있는지 검증
+        boolean hasUnSettledBuffer = earningBufferRepository.existsByTrainerIdAndEarningIsNull(trainerId);
+        if (!hasUnSettledBuffer) {
+            throw new NoEarningBufferToSettleException();
+        }
+
+        // 3. earning 생성 및 버퍼에 연동
+        return earningRepository.createEarningAndAssignToBuffers(trainerId);
+
     }
-
-    // 3. earning 생성 및 버퍼에 연동
-    return earningRepository.createEarningAndAssignToBuffers(trainerId);
-
-}
 
     // 트레이너가 정산 요청 누름
     @Override
