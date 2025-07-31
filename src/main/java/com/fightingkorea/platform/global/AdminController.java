@@ -1,5 +1,7 @@
 package com.fightingkorea.platform.global;
 
+import com.fightingkorea.platform.domain.earning.dto.SettleRequest;
+import com.fightingkorea.platform.domain.earning.service.EarningService;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
 import com.fightingkorea.platform.domain.trainer.service.TrainerService;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
@@ -11,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -22,6 +26,7 @@ public class AdminController {
 
     private final UserService userService;
     private final TrainerService trainerService;
+    private final EarningService earningService;
 
     /**
      * 전체 유저 목록을 조회하는 메서드.
@@ -33,6 +38,7 @@ public class AdminController {
      * @param pageable
      * @return
      */
+    @PreAuthorize("ROLE_ADMIN")
     @GetMapping("/users")
     public Page<User> getUsers(
             @RequestParam(required = false) String name,
@@ -44,13 +50,13 @@ public class AdminController {
         return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
     }
 
-
     /**
      * 특정 유저의 정보를 조회하는 메서드입니다.
      *
      * @param userId
      * @return
      */
+    @PreAuthorize("ROLE_ADMIN")
     @GetMapping("/users/{user-id}")
     public UserResponse getUserInfo(@PathVariable("user-id") Long userId) {
         UserResponse userResponse = userService.getUserInfo(userId);
@@ -64,20 +70,28 @@ public class AdminController {
      * @param isActive
      * @return
      */
+    @PreAuthorize("ROLE_ADMIN")
     @PutMapping("/users/{user-id}")
-    public UserResponse updateUserActive(@PathVariable("user-id") Long userId, @RequestParam Boolean isActive) {
+    public UserResponse updateUserActive(@PathVariable("user-id") Long userId,
+                                         @RequestParam Boolean isActive) {
         UserResponse userResponse = userService.updateUserActive(userId, isActive);
 
         return userResponse;
     }
 
     // 트레이너 목록 조회 (페이징)
+    @PreAuthorize("ROLE_ADMIN")
     @GetMapping("/trainers")
-    public PageImpl<TrainerResponse> getTrainers(Pageable pageable) {
+    public PageImpl<TrainerResponse> getTrainers(@RequestParam Pageable pageable) {
 
         return trainerService.getTrainers(pageable);
     }
 
-
+    // 정산
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/settle")
+    public void settleEarningsByAdmin(@RequestParam Long trainerId) {
+        earningService.settleEarningsByAdmin(trainerId);
+    }
 
 }

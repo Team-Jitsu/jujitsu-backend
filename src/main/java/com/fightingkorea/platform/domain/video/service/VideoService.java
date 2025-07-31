@@ -17,4 +17,5 @@ public interface VideoService {
 
     // 페이징된 특정 유저의 강의 구매 리스트 조회
     Page<UserVideoResponse> getPurchasedVideoList(Long userId, Pageable pageable);
+
 }

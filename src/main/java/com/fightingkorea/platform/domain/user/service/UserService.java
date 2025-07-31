@@ -7,6 +7,7 @@ import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
 import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
+import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -78,4 +79,10 @@ public interface UserService {
      * @param userId
      */
     UserResponse updateUserActive(Long userId, Boolean isActive);
+
+    // 구매 내역 삭제(환불)
+    void deletePurchasedContent(Long userVideoId);
+
+    // 강의 구매
+    UserVideoResponse purchaseVideo(Long videoId);
 }

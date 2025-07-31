@@ -1,16 +1,15 @@
 package com.fightingkorea.platform.domain.video.service.Impl;
 
+import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
 import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
 import com.fightingkorea.platform.domain.video.dto.VideoResponse;
 import com.fightingkorea.platform.domain.video.dto.VideoUpdateRequest;
 import com.fightingkorea.platform.domain.video.dto.VideoUploadRequest;
+import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.entity.Video;
-import com.fightingkorea.platform.domain.video.exception.NotAuthorizedTrainerException;
-import com.fightingkorea.platform.domain.video.exception.UserVideoListNotFoundException;
-import com.fightingkorea.platform.domain.video.exception.VideoConflictException;
-import com.fightingkorea.platform.domain.video.exception.VideoNotExistsException;
+import com.fightingkorea.platform.domain.video.exception.*;
 import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.domain.video.repository.VideoRepository;
 import com.fightingkorea.platform.domain.video.service.CategoryService;
@@ -34,6 +33,7 @@ public class VideoServiceImpl implements VideoService {
     private final TrainerRepository trainerRepository;
     private final UserVideoRepository userVideoRepository;
     private final CategoryService categoryService;
+    private final EarningBufferRepository earningBufferRepository;
 
     @Override
     public VideoResponse uploadVideo(VideoUploadRequest req) {
@@ -120,6 +120,30 @@ public class VideoServiceImpl implements VideoService {
         log.info("강의 구매 목록 조회 성공: {}건", userVideoResponses.getTotalElements());
 
         return userVideoResponses;
+
+    }
+
+    // 구매 내역 삭제(환불)
+    public void deletePurchasedContent(Long userVideoId) {
+
+        Long currentUserId = UserUtil.getUserId();
+        log.info("강의 구매 취소 시도: userVideoId={}, userId={}", userVideoId, UserUtil.getUserId());
+
+        UserVideo userVideo = userVideoRepository.findById(userVideoId)
+                .orElseThrow(UserVideoNotFoundException::new);
+
+        log.info("취소 하려는 구매 내역이 존재하지 않습니다.");
+
+        Boolean isEqual = userVideo.getUser().getUserId().equals(currentUserId);
+
+        if (!isEqual) {
+            throw new NotAuthorizedUserException();
+        }
+
+        userVideoRepository.delete(userVideo);
+        earningBufferRepository.deleteByUserVideo(userVideo);
+
+        log.info("강의 구매 취소 완료");
 
     }
 

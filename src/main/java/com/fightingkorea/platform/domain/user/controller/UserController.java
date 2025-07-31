@@ -109,6 +109,12 @@ public class UserController {
         return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
     }
 
+    // 강의 구매
+    @PostMapping("/{user-video}")
+    public UserVideoResponse purchaseVideo(@PathVariable("user-video") Long videoId) {
+        return userService.purchaseVideo(videoId);
+    }
+
     // 강의 구매 내역을 조회하는 메서드
     @GetMapping("/videos")
     public Page<UserVideoResponse> getPurchasedVideoList(
@@ -118,4 +124,9 @@ public class UserController {
     }
 
 
+    // 강의 구매 내역을 삭제하는 메서드
+    @DeleteMapping("/{user-video}")
+    public void deletePurchasedContent(@PathVariable("user-video") Long userVideoId) {
+        userService.deletePurchasedContent(userVideoId);
+    }
 }

@@ -11,6 +11,7 @@ import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.exception.*;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.user.service.UserService;
+import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
 import com.fightingkorea.platform.global.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -161,9 +162,22 @@ public class UserServiceImpl implements UserService {
         return ResponseMapper.toUserResponse(user);
     }
 
+    // 강의 구매 취소(환불)
+    @Override
+    public void deletePurchasedContent(Long userVideoId) {
+
+    }
+
+    // 강의 구매
+    @Override
+    public UserVideoResponse purchaseVideo(Long videoId) {
+        return null;
+    }
+
     private boolean containsForbiddenWords(String nickname) {
         List<String> forbiddenWords = List.of("욕설1", "욕설2");
         return forbiddenWords.stream().anyMatch(nickname.toLowerCase()::contains);
     }
+
 
 }

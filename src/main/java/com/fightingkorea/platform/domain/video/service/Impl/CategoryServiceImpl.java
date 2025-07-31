@@ -81,4 +81,5 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(categoryId);
         log.info("카테고리 삭제 완료, ID: {}", categoryId);
     }
+
 }

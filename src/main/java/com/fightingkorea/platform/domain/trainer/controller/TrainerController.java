@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.domain.trainer.controller;
 
+import com.fightingkorea.platform.domain.earning.service.EarningService;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerRegisterRequest;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerRegisterResponse;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class TrainerController {
 
     private final TrainerService trainerService;
+    private final EarningService earningService;
 
     // 트레이너 등록
     @PostMapping("/register")
@@ -34,5 +36,11 @@ public class TrainerController {
             @RequestBody TrainerUpdateRequest updateRequest
     ) {
         trainerService.updateTrainer(updateRequest);
+    }
+
+    // 트레이너가 정산 요청
+    @PostMapping("/settle")
+    public void settleEarningsByTrainer() {
+        earningService.settleEarningsByTrainer(UserUtil.getTrainerId());
     }
 }
