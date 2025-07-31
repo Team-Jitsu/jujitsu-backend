@@ -1,4 +1,4 @@
-package com.fightingkorea.platform.domain.video.service.Impl;
+package com.fightingkorea.platform.domain.video.service.impl;
 
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;

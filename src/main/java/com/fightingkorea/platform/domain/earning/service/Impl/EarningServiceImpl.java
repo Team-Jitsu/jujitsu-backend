@@ -7,7 +7,7 @@ import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
 import com.fightingkorea.platform.domain.earning.exception.NoEarningBufferToSettleException;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.earning.repository.EarningRepository;
-import com.fightingkorea.platform.domain.earning.repository.Impl.CustomEarningRepository;
+import com.fightingkorea.platform.domain.earning.repository.impl.CustomEarningRepository;
 import com.fightingkorea.platform.domain.earning.service.EarningBufferService;
 import com.fightingkorea.platform.domain.earning.service.EarningService;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;

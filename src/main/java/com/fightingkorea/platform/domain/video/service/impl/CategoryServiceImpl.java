@@ -1,4 +1,4 @@
-package com.fightingkorea.platform.domain.video.service.Impl;
+package com.fightingkorea.platform.domain.video.service.impl;
 
 import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
 import com.fightingkorea.platform.domain.video.entity.Category;
