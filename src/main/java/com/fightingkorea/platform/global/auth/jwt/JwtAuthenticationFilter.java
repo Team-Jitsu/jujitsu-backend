@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.global.auth.jwt;
 
+import com.fightingkorea.platform.global.auth.detail.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

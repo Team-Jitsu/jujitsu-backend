@@ -7,10 +7,7 @@ import com.fightingkorea.platform.global.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 로그인, 토큰 재발급, 로그아웃
@@ -28,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void logOut() {
+    public void logOut(){
         authService.logOut(UserUtil.getUserId());
     }
 }
