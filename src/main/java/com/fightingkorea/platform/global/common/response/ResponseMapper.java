@@ -64,8 +64,8 @@ public class ResponseMapper {
                 earning.getEarningId(),
                 earning.getTrainer().getTrainerId(),
                 earning.getTotalAmount(),
-                earning.isSettled(),
-                earning.isRequestSettlement()
+                earning.getIsSettled(),
+                earning.getRequestSettlement()
         );
 
     }
