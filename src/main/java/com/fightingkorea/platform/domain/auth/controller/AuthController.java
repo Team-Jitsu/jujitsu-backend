@@ -26,6 +26,6 @@ public class AuthController {
 
     @PostMapping("/logout")
     public void logOut(){
-        authService.logOut(UserUtil.getUserId());
+       authService.logOut(UserUtil.getUserId());
     }
 }

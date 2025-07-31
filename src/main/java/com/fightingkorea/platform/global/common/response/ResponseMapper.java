@@ -43,7 +43,7 @@ public class ResponseMapper {
         );
     }
 
-    public static VideoResponse toVideoResponse(Video video){
+    public static VideoResponse toVideoResponse(Video video) {
         return new VideoResponse(
                 video.getVideoId(),
                 video.getTrainer().getTrainerId(),
@@ -64,8 +64,8 @@ public class ResponseMapper {
                 earning.getEarningId(),
                 earning.getTrainer().getTrainerId(),
                 earning.getTotalAmount(),
-                earning.getIsSettled(),
-                earning.getRequestSettlement()
+                earning.isSettled(),
+                earning.isRequestSettlement()
         );
 
     }
