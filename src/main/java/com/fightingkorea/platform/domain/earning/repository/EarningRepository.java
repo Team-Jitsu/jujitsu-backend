@@ -7,7 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EarningRepository extends JpaRepository<Earning, Long> {
 
-    Earning createEarningAndAssignToBuffers(Long trainerId);
-
     Page<Earning> findByTrainer(Long trainerId, Pageable pageable);
 }

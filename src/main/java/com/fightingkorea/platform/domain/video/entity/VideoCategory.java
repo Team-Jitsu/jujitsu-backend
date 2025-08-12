@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -14,11 +15,11 @@ import lombok.NoArgsConstructor;
 public class VideoCategory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "video_id")
     private Long videoId; // 동영상 아이디
 
-    @Column
+    @Id
+    @Column(name = "category_id")
     private Long categoryId; // 카테고리 아이디
 
     @ManyToOne(fetch = FetchType.LAZY)

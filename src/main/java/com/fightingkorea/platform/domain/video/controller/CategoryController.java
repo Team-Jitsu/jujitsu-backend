@@ -14,7 +14,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping // 카테고리 생성
+    @PostMapping // 카테고리 생성asdasdasdasdasd
     public CategoryResponse createCategory(@RequestBody String categoryName) {
        return categoryService.createCategory(categoryName);
     }

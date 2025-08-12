@@ -15,12 +15,12 @@ public interface EarningBufferRepository extends JpaRepository<EarningBuffer, Lo
     void deleteByUserVideo(UserVideo userVideo);
 
     // earning이 null인 리스트에서 파라미터 값으로 주어진 Trainer로 찾기
-    List<EarningBuffer> findByTrainer(Long trainerId);
+    List<EarningBuffer> findByTrainer_trainerId(Long trainerId);
 
-    List<EarningBuffer> findByTrainerAndEarningIsNotNull(Long trainerId);
+    List<EarningBuffer> findByTrainer_TrainerIdAndEarningIsNotNull(Long trainerId);
 
-    boolean existsByTrainerIdAndEarningIsNull(Long trainerId);
+    boolean existsByTrainer_TrainerIdAndEarningIsNull(Long trainerId);
 
     // trainerId 기준, bufferId가 null이 아닌 것만 페이징 조회
-    Page<EarningBuffer> findByTrainer(Long trainerId, Pageable pageable);
+    Page<EarningBuffer> findByTrainer_TrainerId(Long trainerId, Pageable pageable);
 }

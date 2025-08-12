@@ -66,13 +66,13 @@ public class EarningServiceImpl implements EarningService, EarningBufferService 
                 .orElseThrow(TrainerNotFoundException::new);
 
         // 2. 정산할 earningBuffer가 있는지 검증
-        boolean hasUnSettledBuffer = earningBufferRepository.existsByTrainerIdAndEarningIsNull(trainerId);
+        boolean hasUnSettledBuffer = earningBufferRepository.existsByTrainer_TrainerIdAndEarningIsNull(trainerId);
         if (!hasUnSettledBuffer) {
             throw new NoEarningBufferToSettleException();
         }
 
         // 3. earning 생성 및 버퍼에 연동
-        return earningRepository.createEarningAndAssignToBuffers(trainerId);
+        return customEarningRepository.createEarningAndAssignToBuffers(trainerId);
 
     }
 
@@ -100,7 +100,7 @@ public class EarningServiceImpl implements EarningService, EarningBufferService 
 
     @Override // 트레이너 or admin이 trainer의 판매 내역을 알고자 할 때
     public Page<EarningBufferResponse> getEarningBufferList(Long trainerId, Pageable pageable) {
-        Page<EarningBuffer> buffers = earningBufferRepository.findByTrainer(trainerId, pageable);
+        Page<EarningBuffer> buffers = earningBufferRepository.findByTrainer_TrainerId(trainerId, pageable);
         return buffers.map(ResponseMapper::toEarningBufferResponse);
     }
 
