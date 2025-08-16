@@ -1,22 +1,17 @@
 package com.fightingkorea.platform.domain.video.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class VideoResponse {
-
-    private Long videoId; // 비디오 ID
-
-    private Long trainerId; // 선수(업로더) 아이디
-
-    private String title; // 동영상 제목
-
-    private LocalDateTime uploadTime; // 업로드 시간
-
+    private Long videoId;
+    private String title;
+    private String description;
+    private Integer price;
+    private String s3Key;
+    private String playUrl;     // GET presigned URL
+    private Instant urlExpires; // 만료시각
 }

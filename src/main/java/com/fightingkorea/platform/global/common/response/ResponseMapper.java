@@ -44,12 +44,13 @@ public class ResponseMapper {
     }
 
     public static VideoResponse toVideoResponse(Video video) {
-        return new VideoResponse(
-                video.getVideoId(),
-                video.getTrainer().getTrainerId(),
-                video.getTitle(),
-                video.getUploadTime()
-        );
+        return VideoResponse.builder()
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .price(video.getPrice())
+                .s3Key(video.getS3Key())
+                .build();
     }
 
     public static CategoryResponse toCategoryResponse(Category category) {
