@@ -23,7 +23,7 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final VideoService videoService;
 
-    @PostMapping // 카테고리 생성asdasdasdasdasd
+    @PostMapping // 카테고리 생성
     public CategoryResponse createCategory(@RequestBody String categoryName) {
        return categoryService.createCategory(categoryName);
     }
