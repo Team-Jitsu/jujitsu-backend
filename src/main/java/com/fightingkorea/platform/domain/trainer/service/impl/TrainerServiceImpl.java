@@ -112,4 +112,29 @@ public class TrainerServiceImpl implements TrainerService {
 
         log.info("트레이너 정보 수정 완료, 트레이너 ID: {}", trainerUpdateRequest.getTrainerId());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageImpl<TrainerResponse> getTrainers(Pageable pageable) {
+        log.info("트레이너 목록 조회 요청, 페이지 번호: {}, 페이지 크기: {}",
+                pageable.getPageNumber(), pageable.getPageSize());
+
+        // 트레이너 페이징 조회
+        var trainerPage = trainerRepository.findAll(pageable);
+
+        // 각 트레이너에 대한 Specialty 조회 후 매핑
+        List<TrainerResponse> responses = trainerPage.stream()
+                .map(trainer -> {
+                    List<TrainerSpecialty> specialties =
+                            trainerSpecialtyRepository.findByTrainerTrainerId(trainer.getTrainerId());
+                    return ResponseMapper.toTrainerResponse(trainer, specialties);
+                })
+                .toList();
+
+        log.info("트레이너 목록 조회 완료, 조회 수: {}", responses.size());
+
+        return new PageImpl<>(responses, pageable, trainerPage.getTotalElements());
+    }
+
+
 }

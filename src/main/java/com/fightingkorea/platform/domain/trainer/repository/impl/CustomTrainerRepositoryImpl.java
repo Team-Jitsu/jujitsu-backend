@@ -95,4 +95,40 @@ public class CustomTrainerRepositoryImpl implements CustomTrainerRepository {
         return new PageImpl<>(contents, pageable, total);
     }
 
+    @Override
+    public PageImpl<TrainerResponse> getTrainers(Pageable pageable) {
+        List<TrainerResponse> contents = queryFactory
+                .select(Projections.constructor(TrainerResponse.class,
+                        trainer.trainerId,
+                        trainer.accountOwnerName,
+                        trainer.accountNumber,
+                        trainer.bio,
+                        trainer.automaticSettlement,
+                        trainer.charge,
+                        Projections.constructor(UserResponse.class,
+                                user.userId,
+                                user.nickname,
+                                user.role,
+                                user.createdAt
+                        )
+                ))
+                .from(trainer)
+                .join(trainer.user, user)
+                .where(user.isActive.eq(true))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(user.createdAt.desc()) // 기본 정렬 createdAt desc
+                .fetch();
+
+        Long total = queryFactory
+                .select(trainer.count())
+                .from(trainer)
+                .join(trainer.user, user)
+                .where(user.isActive.eq(true))
+                .fetchOne();
+
+        return new PageImpl<>(contents, pageable, total == null ? 0 : total);
+    }
+
+
 }

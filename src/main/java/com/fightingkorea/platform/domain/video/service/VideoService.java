@@ -20,10 +20,6 @@ public interface VideoService {
 
     VideoResponse uploadVideoMultipart(VideoUploadMultipartRequest req, org.springframework.web.multipart.MultipartFile file);
 
-    
-
-    
-
     VideoResponse getPlayUrl(Long videoId);
 
     VideoResponse getVideo(Long videoId);

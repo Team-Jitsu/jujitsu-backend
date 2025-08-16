@@ -7,4 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface CustomTrainerRepository {
     PageImpl<TrainerResponse> search(TrainerSearchRequest request, Pageable pageable);
+
+    PageImpl<TrainerResponse> getTrainers(Pageable pageable);
 }

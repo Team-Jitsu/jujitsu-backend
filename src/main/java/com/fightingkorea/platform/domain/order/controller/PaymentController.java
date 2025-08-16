@@ -42,16 +42,4 @@ public class PaymentController {
     public PaymentStatusDto getPaymentStatus(@PathVariable String paymentKey) {
         return purchaseService.getPaymentStatus(paymentKey);
     }
-
-    // 결제 실패 처리 엔드포인트
-    @PostMapping("/fail")
-    public Order failPayment(@RequestBody PaymentFailRequest request) {
-        return purchaseService.handlePaymentFailure(request.getTossOrderId(), request.getErrorMessage());
-    }
-
-    // 결제 상태 조회 엔드포인트
-    @GetMapping("/{paymentKey}/status")
-    public PaymentStatusDto getPaymentStatus(@PathVariable String paymentKey) {
-        return purchaseService.getPaymentStatus(paymentKey);
-    }
 }

@@ -117,14 +117,6 @@ public class UserController {
         return userService.purchaseVideo(videoId);
     }
 
-    // 강의 구매 내역을 조회하는 메서드
-    @GetMapping("/videos")
-    public Page<UserVideoResponse> getPurchasedVideoList(
-            @PageableDefault(size = 10, sort = "purchasedAt", direction = Sort.Direction.DESC) Pageable pageable
-    ) {
-        return videoService.getPurchasedVideoList(UserUtil.getUserId(), pageable);
-    }
-
     // 현재 로그인한 사용자의 강의 구매 목록 조회 (사양 경로)
     @GetMapping("/me/purchases")
     public Page<UserVideoResponse> getMyPurchasedVideos(
