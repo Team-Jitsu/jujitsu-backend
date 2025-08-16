@@ -48,7 +48,7 @@ public class VideoQueryRepository {
         if ("active".equals(request.getStatus())) {
             query.having(userVideo.count().gt(0));
         } else if ("inactive".equals(request.getStatus())) {
-            query.having(userVideo.count().eq(0));
+            query.having(userVideo.count().eq(0L));
         }
 
         switch (request.getSortBy()) {
