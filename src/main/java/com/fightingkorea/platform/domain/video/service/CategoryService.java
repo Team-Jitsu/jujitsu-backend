@@ -1,6 +1,7 @@
 package com.fightingkorea.platform.domain.video.service;
 
 import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
+import com.fightingkorea.platform.domain.video.dto.CategoryStatsResponse;
 
 import java.util.List;
 
@@ -17,4 +18,7 @@ public interface CategoryService {
 
     // 카테고리 삭제
     void deleteCategory(Long categoryId);
+
+    // 카테고리 통계 조회
+    CategoryStatsResponse getCategoryStats(Long categoryId);
 }
