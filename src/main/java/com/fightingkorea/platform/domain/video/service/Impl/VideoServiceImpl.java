@@ -6,7 +6,6 @@ import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
 import com.fightingkorea.platform.domain.video.dto.*;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.entity.Video;
-import com.fightingkorea.platform.domain.video.entity.VideoCategory;
 import com.fightingkorea.platform.domain.video.exception.*;
 import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.domain.video.repository.VideoRepository;
@@ -19,9 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,37 +41,8 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<VideoResponse> getVideos(VideoSearchRequest request, Pageable pageable) {
-        Specification<Video> spec = Specification.where(null);
-
-        if (request.getTrainerId() != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("trainer").get("trainerId"), request.getTrainerId()));
-        }
-
-        if (request.getSearch() != null && !request.getSearch().isBlank()) {
-            String like = "%" + request.getSearch() + "%";
-            spec = spec.and((root, query, cb) -> cb.or(
-                    cb.like(root.get("title"), like),
-                    cb.like(root.get("description"), like)
-            ));
-        }
-
-        if (request.getMinPrice() != null) {
-            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("price"), request.getMinPrice()));
-        }
-
-        if (request.getMaxPrice() != null) {
-            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("price"), request.getMaxPrice()));
-        }
-
-        if (request.getCategoryId() != null) {
-            spec = spec.and((root, query, cb) -> {
-                Join<Video, VideoCategory> join = root.join("videoCategories", JoinType.INNER);
-                return cb.equal(join.get("categoryId"), request.getCategoryId());
-            });
-        }
-
-        return videoRepository.findAll(spec, pageable).map(this::toDtoWithNoLink);
+    public Page<VideoResponse> getVideos(Pageable pageable) {
+        return videoRepository.findAll(pageable).map(this::toDtoWithNoLink);
     }
 
     @Override
