@@ -1,7 +1,7 @@
 package com.fightingkorea.platform.domain.video.entity;
 
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
-import com.fightingkorea.platform.domain.video.dto.VideoUploadRequest;
+
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -32,8 +32,8 @@ public class Video {
     @Column(length = 100, nullable = false)
     private String title; // 동영상 제목
 
-    @Column(length = 100, nullable = false)
-    private String url; // 영상 파일 경로
+    @Column(length = 255, name = "s3_key")
+    private String s3Key; // S3 키
 
     @Column(columnDefinition = "text")
     private String description; // 설명
@@ -47,22 +47,16 @@ public class Video {
     @Column
     private Integer likesCount; // 좋아요
 
-    public static Video createVideo(VideoUploadRequest req, Trainer trainer) {
+    public static Video createVideoFromMultipart(com.fightingkorea.platform.domain.video.dto.VideoUploadMultipartRequest req, Trainer trainer, String s3Key) {
         return Video
                 .builder()
                 .trainer(trainer)
                 .title(req.getTitle())
-                .url(req.getUrl())
                 .description(req.getDescription())
                 .price(req.getPrice())
+                .s3Key(s3Key)
                 .likesCount(0)
                 .build();
-    }
-
-
-    // 동영상 경로 변경
-    public void updateUrl(String url){
-        this.url = url;
     }
 
     // 동영상 가격 업데이트

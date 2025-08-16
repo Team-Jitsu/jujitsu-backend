@@ -51,25 +51,11 @@ CREATE TABLE `earnings` (
                             FOREIGN KEY (`trainer_id`) REFERENCES `trainers`(`trainer_id`)
 );
 
-CREATE TABLE `earning_buffer` (
-                                  `buffer_id` bigint NOT NULL AUTO_INCREMENT,
-                                  `trainer_id` bigint NOT NULL,
-                                  `user_videos_id` bigint NOT NULL,
-                                  `earning_id` bigint DEFAULT NULL,
-                                  `amount` int NOT NULL,
-                                  `created_at` datetime NOT NULL,
-                                  PRIMARY KEY (`buffer_id`),
-                                  INDEX `idx_earning` (`trainer_id`, `earning_id`),
-                                  FOREIGN KEY (`trainer_id`) REFERENCES `trainers`(`trainer_id`)
-                                      FOREIGN KEY (`user_videos_id`) REFERENCES `user_videos`(`user_videos_id`),
-                                  FOREIGN KEY (`earning_id`) REFERENCES `earnings`(`earning_id`)
-);
-
 CREATE TABLE `videos` (
                           `video_id` bigint NOT NULL AUTO_INCREMENT,
                           `trainer_id` bigint NOT NULL,
                           `title` varchar(100) NOT NULL,
-                          `url` varchar(200) NOT NULL,
+                          `s3_key` varchar(200) NOT NULL,
                           `description` text DEFAULT NULL,
                           `upload_time` datetime NOT NULL,
                           `price` int NOT NULL,
@@ -97,16 +83,31 @@ CREATE TABLE `user_videos` (
                                FOREIGN KEY (`video_id`) REFERENCES `videos`(`video_id`)
 );
 
+CREATE TABLE `earning_buffer` (
+                                  `buffer_id` bigint NOT NULL AUTO_INCREMENT,
+                                  `trainer_id` bigint NOT NULL,
+                                  `user_videos_id` bigint NOT NULL,
+                                  `earning_id` bigint DEFAULT NULL,
+                                  `amount` int NOT NULL,
+                                  `created_at` datetime NOT NULL,
+                                  PRIMARY KEY (`buffer_id`),
+                                  INDEX `idx_earning` (`trainer_id`, `earning_id`),
+                                  FOREIGN KEY (`trainer_id`) REFERENCES `trainers`(`trainer_id`),
+                                  FOREIGN KEY (`user_videos_id`) REFERENCES `user_videos`(`user_videos_id`),
+                                  FOREIGN KEY (`earning_id`) REFERENCES `earnings`(`earning_id`)
+);
+
+
 CREATE TABLE `orders` (
-                          `order_id`	BIGINT	NOT NULL	COMMENT 'autoincrement',
+                          `order_id`	BIGINT	NOT NULL AUTO_INCREMENT,
                           `toss_order_id`	VARCHAR(100)	NOT NULL	COMMENT 'UUID',
                           `amount`	int	NOT NULL,
-                          `status`	enum	NOT NULL,
+                          `status`	varchar(200)	NOT NULL,
                           `payment_key`	VARCHAR(200)	NULL	COMMENT '결제 완료시 받는 key',
                           `created_at`	DATETIME	NOT NULL,
                           `user_id`	bigint	NOT NULL	COMMENT 'autoincrement',
-                          `user_videos_id`	bigint	NULL	COMMENT 'autoincrement'
-                          PRIMARY KEY (`user_videos_id`),
+                          `user_videos_id`	bigint	NULL	COMMENT 'autoincrement',
+                          PRIMARY KEY (`order_id`),
                           INDEX (`order_id`),
                           FOREIGN KEY (`user_id`) REFERENCES `users`(`user_id`),
                           FOREIGN KEY (`user_videos_id`) REFERENCES `user_videos`(`user_videos_id`)

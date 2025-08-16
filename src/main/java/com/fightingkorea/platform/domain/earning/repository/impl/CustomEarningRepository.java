@@ -1,4 +1,4 @@
-package com.fightingkorea.platform.domain.earning.repository.Impl;
+package com.fightingkorea.platform.domain.earning.repository.impl;
 
 import com.fightingkorea.platform.domain.earning.entity.Earning;
 import com.fightingkorea.platform.domain.earning.entity.QEarningBuffer;

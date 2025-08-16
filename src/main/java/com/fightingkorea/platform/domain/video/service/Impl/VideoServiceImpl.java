@@ -1,19 +1,16 @@
 package com.fightingkorea.platform.domain.video.service.Impl;
 
+import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
-import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
-import com.fightingkorea.platform.domain.video.dto.VideoResponse;
-import com.fightingkorea.platform.domain.video.dto.VideoUpdateRequest;
-import com.fightingkorea.platform.domain.video.dto.VideoUploadRequest;
+import com.fightingkorea.platform.domain.video.dto.*;
+import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.entity.Video;
-import com.fightingkorea.platform.domain.video.exception.NotAuthorizedTrainerException;
-import com.fightingkorea.platform.domain.video.exception.UserVideoListNotFoundException;
-import com.fightingkorea.platform.domain.video.exception.VideoConflictException;
-import com.fightingkorea.platform.domain.video.exception.VideoNotExistsException;
+import com.fightingkorea.platform.domain.video.exception.*;
 import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.domain.video.repository.VideoRepository;
 import com.fightingkorea.platform.domain.video.service.CategoryService;
+import com.fightingkorea.platform.domain.video.service.S3VideoStorageService;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import com.fightingkorea.platform.global.UserUtil;
 import com.fightingkorea.platform.global.common.response.ResponseMapper;
@@ -23,6 +20,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.Duration;
 
 @Slf4j
 @Service
@@ -34,29 +34,10 @@ public class VideoServiceImpl implements VideoService {
     private final TrainerRepository trainerRepository;
     private final UserVideoRepository userVideoRepository;
     private final CategoryService categoryService;
+    private final EarningBufferRepository earningBufferRepository;
+    private final S3VideoStorageService s3;
 
-    @Override
-    public VideoResponse uploadVideo(VideoUploadRequest req) {
-
-        log.info("강의 등록 시도: title={}, trainerId={}", req.getTitle(), req.getTrainerId());
-
-        Boolean isExist = videoRepository.existsByTitle(req.getTitle());
-
-        if (isExist) {
-            throw new VideoConflictException();
-        }
-
-        Trainer trainer = trainerRepository.getReferenceById(req.getTrainerId());
-        Video video = Video.createVideo(req, trainer);
-
-        videoRepository.save(video);
-
-        categoryService.setVideoCategory(video.getVideoId(), req.getCategoryIds());
-
-        log.info("강의 등록 성공: title={}, trainerId={}", video.getTitle(), video.getTrainer());
-
-        return ResponseMapper.toVideoResponse(video);
-    }
+    
 
     @Override
     public VideoResponse updateVideo(Long videoId, VideoUpdateRequest req) {
@@ -121,6 +102,97 @@ public class VideoServiceImpl implements VideoService {
 
         return userVideoResponses;
 
+    }
+
+    // 구매 내역 삭제(환불)
+    public void deletePurchasedContent(Long userVideoId) {
+
+        Long currentUserId = UserUtil.getUserId();
+        log.info("강의 구매 취소 시도: userVideoId={}, userId={}", userVideoId, UserUtil.getUserId());
+
+        UserVideo userVideo = userVideoRepository.findById(userVideoId)
+                .orElseThrow(UserVideoNotFoundException::new);
+
+        log.info("취소 하려는 구매 내역이 존재하지 않습니다.");
+
+        Boolean isEqual = userVideo.getUser().getUserId().equals(currentUserId);
+
+        if (!isEqual) {
+            throw new NotAuthorizedUserException();
+        }
+
+        userVideoRepository.delete(userVideo);
+        earningBufferRepository.deleteByUserVideo(userVideo);
+
+        log.info("강의 구매 취소 완료");
+
+    }
+
+    @Override
+    public VideoResponse uploadVideoMultipart(VideoUploadMultipartRequest req, MultipartFile file) {
+        validateTitle(req.getTitle());
+        Trainer trainer = trainerRepository.getReferenceById(req.getTrainerId());
+
+        String key = s3.newVideoKey(file.getOriginalFilename());
+        try {
+            s3.putObject(key, file.getBytes(), file.getContentType());
+        } catch (Exception e) {
+            throw new RuntimeException("S3 업로드 실패", e);
+        }
+
+        Video video = Video.createVideoFromMultipart(req, trainer, key);
+        videoRepository.save(video);
+        categoryService.setVideoCategory(video.getVideoId(), req.getCategoryIds());
+
+        var read = s3.createPresignedGet(key, Duration.ofHours(1));
+        return VideoResponse.builder()
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .price(video.getPrice())
+                .s3Key(key)
+                .playUrl(read.url())
+                .urlExpires(read.expiresAt())
+                .build();
+    }
+
+    
+
+    @Override
+    @Transactional(readOnly = true)
+    public VideoResponse getPlayUrl(Long videoId) {
+        Video v = videoRepository.getReferenceById(videoId);
+        var read = s3.createPresignedGet(v.getS3Key(), Duration.ofHours(1));
+        return VideoResponse.builder()
+                .videoId(v.getVideoId())
+                .title(v.getTitle())
+                .description(v.getDescription())
+                .price(v.getPrice())
+                .s3Key(v.getS3Key())
+                .playUrl(read.url())
+                .urlExpires(read.expiresAt())
+                .build();
+    }
+
+    private void validateTitle(String title) {
+        if (videoRepository.existsByTitle(title)) throw new VideoConflictException();
+    }
+
+    private VideoResponse toDtoWithNoLink(Video video) {
+        return VideoResponse.builder()
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .price(video.getPrice())
+                .s3Key(video.getS3Key())
+                .build();
+    }
+
+    @Override
+    public VideoResponse getVideo(Long videoId) {
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(VideoNotExistsException::new);
+        return toDtoWithNoLink(video);
     }
 
 

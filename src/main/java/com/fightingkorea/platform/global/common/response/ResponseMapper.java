@@ -1,7 +1,9 @@
 package com.fightingkorea.platform.global.common.response;
 
+import com.fightingkorea.platform.domain.earning.dto.EarningBufferResponse;
 import com.fightingkorea.platform.domain.earning.dto.EarningResponse;
 import com.fightingkorea.platform.domain.earning.entity.Earning;
+import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
 import com.fightingkorea.platform.domain.trainer.dto.SpecialtyResponse;
 import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
 import com.fightingkorea.platform.domain.trainer.entity.Specialty;
@@ -42,12 +44,13 @@ public class ResponseMapper {
     }
 
     public static VideoResponse toVideoResponse(Video video) {
-        return new VideoResponse(
-                video.getVideoId(),
-                video.getTrainer().getTrainerId(),
-                video.getTitle(),
-                video.getUploadTime()
-        );
+        return VideoResponse.builder()
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .price(video.getPrice())
+                .s3Key(video.getS3Key())
+                .build();
     }
 
     public static CategoryResponse toCategoryResponse(Category category) {
@@ -62,9 +65,20 @@ public class ResponseMapper {
                 earning.getEarningId(),
                 earning.getTrainer().getTrainerId(),
                 earning.getTotalAmount(),
-                earning.isSettled(),
-                earning.isRequestSettlement()
+                earning.getIsSettled(),
+                earning.getRequestSettlement()
         );
 
+    }
+
+    public static EarningBufferResponse toEarningBufferResponse(EarningBuffer earningBuffer){
+        return new EarningBufferResponse(
+                earningBuffer.getBufferId(),
+                earningBuffer.getTrainer().getTrainerId(),
+                earningBuffer.getUserVideo().getUserVideoId(),
+                earningBuffer.getEarning().getEarningId(),
+                earningBuffer.getAmount(),
+                earningBuffer.getCreatedAt()
+        );
     }
 }
