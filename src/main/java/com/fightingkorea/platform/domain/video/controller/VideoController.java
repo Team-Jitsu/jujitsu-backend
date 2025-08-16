@@ -5,6 +5,9 @@ import com.fightingkorea.platform.domain.video.dto.VideoSearchRequest;
 import com.fightingkorea.platform.domain.video.dto.VideoUpdateRequest;
 import com.fightingkorea.platform.domain.video.dto.VideoUploadMultipartRequest;
 import com.fightingkorea.platform.domain.video.service.VideoService;
+import com.fightingkorea.platform.domain.order.dto.VideoPurchaseRequest;
+import com.fightingkorea.platform.domain.order.entity.Order;
+import com.fightingkorea.platform.domain.order.service.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class VideoController {
 
     private final VideoService videoService;
+    private final PurchaseService purchaseService;
 
 
     @PostMapping
@@ -94,6 +98,12 @@ public class VideoController {
     @GetMapping("/{videoId}/play")
     public VideoResponse getPlayUrl(@PathVariable("videoId") Long videoId) {
         return videoService.getPlayUrl(videoId);
+    }
+
+    @PostMapping("/{videoId}/purchase")
+    public Order purchaseVideo(@PathVariable Long videoId, @RequestBody VideoPurchaseRequest request) {
+        request.setVideoId(videoId);
+        return purchaseService.purchaseVideo(request);
     }
 
 

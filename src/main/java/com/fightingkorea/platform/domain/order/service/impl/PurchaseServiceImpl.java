@@ -2,10 +2,13 @@ package com.fightingkorea.platform.domain.order.service.impl;
 
 import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
+import com.fightingkorea.platform.domain.order.dto.PaymentCompleteDto;
 import com.fightingkorea.platform.domain.order.dto.PaymentRequestDto;
 import com.fightingkorea.platform.domain.order.dto.PaymentRequestRequest;
 import com.fightingkorea.platform.domain.order.dto.PaymentStatusDto;
 import com.fightingkorea.platform.domain.order.dto.TossPaymentResponse;
+import com.fightingkorea.platform.domain.order.dto.TossPaymentWebhookRequest;
+import com.fightingkorea.platform.domain.order.dto.VideoPurchaseDto;
 import com.fightingkorea.platform.domain.order.dto.VideoPurchaseRequest;
 import com.fightingkorea.platform.domain.order.entity.Order;
 import com.fightingkorea.platform.domain.order.entity.OrderStatus;
@@ -29,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 /**
  * 결제 및 주문 관련 처리 서비스 구현 클래스
@@ -134,6 +138,18 @@ public class PurchaseServiceImpl implements PurchaseService {
                 .status("READY")
                 .amount(request.getTotalAmount())
                 .expiresAt(expiresAt)
+                .build();
+    }
+
+    @Override
+    public PaymentCompleteDto completePayment(TossPaymentWebhookRequest request) {
+        return PaymentCompleteDto.builder()
+                .paymentId(System.currentTimeMillis())
+                .orderId(request.getOrderId())
+                .status(request.getStatus())
+                .completedAt(LocalDateTime.now())
+                .purchasedVideos(Collections.<VideoPurchaseDto>emptyList())
+                .totalAmount(request.getTotalAmount())
                 .build();
     }
 
