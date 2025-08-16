@@ -12,6 +12,5 @@ public interface PurchaseService {
     Order handlePaymentFailure(String tossOrderId, String errorMessage);
 
     PaymentStatusDto getPaymentStatus(String paymentKey);
-
     PaymentRequestDto requestPayment(PaymentRequestRequest request);
 }
