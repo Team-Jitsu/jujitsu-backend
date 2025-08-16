@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 public interface VideoService {
 
 
-    // 비디오 목록 조회 (필터링 및 페이징)
-    Page<VideoResponse> getVideos(VideoSearchRequest request, Pageable pageable);
+    // 비디오 목록 조회 (페이징)
+    Page<VideoResponse> getVideos(Pageable pageable);
     
 
     VideoResponse updateVideo(Long videoId, VideoUpdateRequest req);
