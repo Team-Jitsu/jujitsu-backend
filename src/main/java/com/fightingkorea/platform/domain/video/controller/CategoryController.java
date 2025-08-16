@@ -1,6 +1,7 @@
 package com.fightingkorea.platform.domain.video.controller;
 
 import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
+import com.fightingkorea.platform.domain.video.dto.CategoryStatsResponse;
 import com.fightingkorea.platform.domain.video.dto.VideoResponse;
 import com.fightingkorea.platform.domain.video.dto.VideoSearchRequest;
 import com.fightingkorea.platform.domain.video.service.CategoryService;
@@ -77,5 +78,10 @@ public class CategoryController {
     @DeleteMapping("/{category-id}") // 카테고리 삭제
     public void deleteCategory(@PathVariable("category-id") Long categoryId) {
         categoryService.deleteCategory(categoryId);
+    }
+
+    @GetMapping("/{categoryId}/stats")
+    public CategoryStatsResponse getCategoryStats(@PathVariable Long categoryId) {
+        return categoryService.getCategoryStats(categoryId);
     }
 }

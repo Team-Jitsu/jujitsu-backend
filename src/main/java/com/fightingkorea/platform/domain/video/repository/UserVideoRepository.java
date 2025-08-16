@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserVideoRepository extends JpaRepository<UserVideo, Long>, CustomUserVideoRepository {
 
+    long countByVideo_VideoCategories_CategoryId(Long categoryId);
 }

@@ -1,12 +1,19 @@
 package com.fightingkorea.platform.domain.video.service.Impl;
 
 import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
+import com.fightingkorea.platform.domain.video.dto.CategoryStatsResponse;
+import com.fightingkorea.platform.domain.video.dto.CategorySummaryResponse;
+import com.fightingkorea.platform.domain.video.dto.FeaturedVideoResponse;
+import com.fightingkorea.platform.domain.video.dto.TrainerSummaryResponse;
 import com.fightingkorea.platform.domain.video.entity.Category;
+import com.fightingkorea.platform.domain.video.entity.Video;
 import com.fightingkorea.platform.domain.video.entity.VideoCategory;
 import com.fightingkorea.platform.domain.video.exception.CategoryConflictException;
 import com.fightingkorea.platform.domain.video.exception.CategoryNotFoundException;
 import com.fightingkorea.platform.domain.video.repository.CategoryRepository;
 import com.fightingkorea.platform.domain.video.repository.VideoCategoryRepository;
+import com.fightingkorea.platform.domain.video.repository.VideoRepository;
+import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.domain.video.service.CategoryService;
 import com.fightingkorea.platform.global.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +32,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final VideoCategoryRepository videoCategoryRepository;
+    private final VideoRepository videoRepository;
+    private final UserVideoRepository userVideoRepository;
 
     // 전체 카테고리 목록 조회
     @Transactional(readOnly = true)
@@ -80,6 +89,55 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryRepository.deleteById(categoryId);
         log.info("카테고리 삭제 완료, ID: {}", categoryId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public CategoryStatsResponse getCategoryStats(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+
+        long courseCount = videoRepository.countByVideoCategories_CategoryId(categoryId);
+        long totalStudents = userVideoRepository.countByVideo_VideoCategories_CategoryId(categoryId);
+
+        List<Video> featuredVideos = videoRepository
+                .findTop3ByVideoCategories_CategoryIdOrderByLikesCountDesc(categoryId);
+
+        List<FeaturedVideoResponse> featuredVideoResponses = featuredVideos.stream()
+                .map(this::convertToFeaturedVideoResponse)
+                .toList();
+
+        return CategoryStatsResponse.builder()
+                .categoryId(category.getCategoryId())
+                .categoryName(category.getCategoryName())
+                .courseCount((int) courseCount)
+                .averageRating(4.5)
+                .totalStudents((int) totalStudents)
+                .featuredVideos(featuredVideoResponses)
+                .build();
+    }
+
+    private FeaturedVideoResponse convertToFeaturedVideoResponse(Video video) {
+        return FeaturedVideoResponse.builder()
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .s3Key(video.getS3Key())
+                .price(video.getPrice())
+                .likeCount(video.getLikesCount())
+                .uploadTime(video.getUploadTime())
+                .trainer(TrainerSummaryResponse.builder()
+                        .trainerId(video.getTrainer().getTrainerId())
+                        .nickname(video.getTrainer().getUser().getNickname())
+                        .bio(video.getTrainer().getBio())
+                        .build())
+                .categories(video.getVideoCategories().stream()
+                        .map(vc -> CategorySummaryResponse.builder()
+                                .categoryId(vc.getCategory().getCategoryId())
+                                .categoryName(vc.getCategory().getCategoryName())
+                                .build())
+                        .toList())
+                .build();
     }
 
 }
