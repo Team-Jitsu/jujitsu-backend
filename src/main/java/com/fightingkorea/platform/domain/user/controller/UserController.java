@@ -123,6 +123,14 @@ public class UserController {
         return videoService.getPurchasedVideoList(UserUtil.getUserId(), pageable);
     }
 
+    // 현재 로그인한 사용자의 강의 구매 목록 조회 (사양 경로)
+    @GetMapping("/me/purchases")
+    public Page<UserVideoResponse> getMyPurchasedVideos(
+            @PageableDefault(size = 10, sort = "purchasedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return videoService.getPurchasedVideoList(UserUtil.getUserId(), pageable);
+    }
+
 
     // 강의 구매 내역을 삭제하는 메서드
     @DeleteMapping("/{user-video}")

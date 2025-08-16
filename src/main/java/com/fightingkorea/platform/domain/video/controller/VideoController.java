@@ -6,6 +6,9 @@ import com.fightingkorea.platform.domain.video.dto.VideoUploadMultipartRequest;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +23,12 @@ public class VideoController {
     @PostMapping
     public VideoResponse uploadVideo(@RequestPart @Validated VideoUploadMultipartRequest req, @RequestPart MultipartFile file){
         return videoService.uploadVideoMultipart(req, file);
+    }
+
+    // 비디오 목록 조회
+    @GetMapping
+    public Page<VideoResponse> getVideos(@PageableDefault(size = 20) Pageable pageable) {
+        return videoService.getVideos(pageable);
     }
 
     // 비디오 수정
