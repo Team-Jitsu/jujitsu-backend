@@ -2,6 +2,7 @@ package com.fightingkorea.platform.domain.order.service.impl;
 
 import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
+import com.fightingkorea.platform.domain.order.dto.PaymentStatusDto;
 import com.fightingkorea.platform.domain.order.dto.TossPaymentResponse;
 import com.fightingkorea.platform.domain.order.dto.VideoPurchaseRequest;
 import com.fightingkorea.platform.domain.order.entity.Order;
@@ -97,6 +98,23 @@ public class PurchaseServiceImpl implements PurchaseService {
         // 로그는 handler 에서 처리하므로 여기서 제거 가능
 
         return orderRepository.save(order);
+    }
+
+    /**
+     * 결제 상태 조회
+     */
+    @Override
+    public PaymentStatusDto getPaymentStatus(String paymentKey) {
+        Order order = orderRepository.findByPaymentKey(paymentKey)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + paymentKey));
+
+        return PaymentStatusDto.builder()
+                .paymentKey(order.getPaymentKey())
+                .orderId(order.getTossOrderId())
+                .status(order.getStatus().name())
+                .totalAmount(order.getAmount())
+                .approvedAt(order.getCreatedAt())
+                .build();
     }
 
     /**

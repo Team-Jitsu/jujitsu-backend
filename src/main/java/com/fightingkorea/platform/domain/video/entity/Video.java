@@ -1,12 +1,13 @@
 package com.fightingkorea.platform.domain.video.entity;
 
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
-
 import jakarta.persistence.*;
-
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "videos")
@@ -46,6 +47,9 @@ public class Video {
 
     @Column
     private Integer likesCount; // 좋아요
+
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VideoCategory> videoCategories = new ArrayList<>();
 
     public static Video createVideoFromMultipart(com.fightingkorea.platform.domain.video.dto.VideoUploadMultipartRequest req, Trainer trainer, String s3Key) {
         return Video
