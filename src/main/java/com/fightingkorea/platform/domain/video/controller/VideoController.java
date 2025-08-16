@@ -1,14 +1,16 @@
 package com.fightingkorea.platform.domain.video.controller;
 
 import com.fightingkorea.platform.domain.video.dto.VideoResponse;
+import com.fightingkorea.platform.domain.video.dto.VideoSearchRequest;
 import com.fightingkorea.platform.domain.video.dto.VideoUpdateRequest;
 import com.fightingkorea.platform.domain.video.dto.VideoUploadMultipartRequest;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,8 +29,47 @@ public class VideoController {
 
     // 비디오 목록 조회
     @GetMapping
-    public Page<VideoResponse> getVideos(@PageableDefault(size = 20) Pageable pageable) {
-        return videoService.getVideos(pageable);
+    public Page<VideoResponse> getVideos(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer perPage,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long trainerId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false, defaultValue = "latest") String sortBy,
+            @RequestParam(required = false, defaultValue = "desc") String sortOrder
+    ) {
+        int p = (page == null || page < 1) ? 0 : page - 1;
+        int size = (perPage == null) ? 20 : Math.min(perPage, 100);
+
+        String sortField;
+        switch (sortBy) {
+            case "price":
+                sortField = "price";
+                break;
+            case "popularity":
+                sortField = "likesCount";
+                break;
+            default:
+                sortField = "uploadTime";
+        }
+
+        Sort sort = "asc".equalsIgnoreCase(sortOrder)
+                ? Sort.by(sortField).ascending()
+                : Sort.by(sortField).descending();
+
+        Pageable pageable = PageRequest.of(p, size, sort);
+
+        VideoSearchRequest request = VideoSearchRequest.builder()
+                .categoryId(categoryId)
+                .trainerId(trainerId)
+                .search(search)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
+                .build();
+
+        return videoService.getVideos(request, pageable);
     }
 
     // 비디오 수정
