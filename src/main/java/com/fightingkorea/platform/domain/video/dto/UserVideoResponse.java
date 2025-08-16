@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserVideoResponse {
 
+    private Long purchaseId; // 구매 아이디
     private Long videoId; // 비디오 아이디
 
     private String title; // 비디오 제목

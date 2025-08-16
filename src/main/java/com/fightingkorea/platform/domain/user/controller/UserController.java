@@ -8,11 +8,13 @@ import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
+import com.fightingkorea.platform.domain.video.dto.PurchaseSearchRequest;
 import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import com.fightingkorea.platform.global.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -126,9 +128,26 @@ public class UserController {
     // 현재 로그인한 사용자의 강의 구매 목록 조회 (사양 경로)
     @GetMapping("/me/purchases")
     public Page<UserVideoResponse> getMyPurchasedVideos(
-            @PageableDefault(size = 10, sort = "purchasedAt", direction = Sort.Direction.DESC) Pageable pageable
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer perPage,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false, defaultValue = "purchaseDate") String sortBy,
+            @RequestParam(required = false, defaultValue = "desc") String sortOrder
     ) {
-        return videoService.getPurchasedVideoList(UserUtil.getUserId(), pageable);
+        int p = (page == null || page < 1) ? 0 : page - 1;
+        int size = (perPage == null) ? 20 : Math.min(perPage, 100);
+
+        Pageable pageable = PageRequest.of(p, size);
+
+        PurchaseSearchRequest request = PurchaseSearchRequest.builder()
+                .categoryId(categoryId)
+                .search(search)
+                .sortBy(sortBy)
+                .sortOrder(sortOrder)
+                .build();
+
+        return videoService.getPurchasedVideoList(UserUtil.getUserId(), request, pageable);
     }
 
 

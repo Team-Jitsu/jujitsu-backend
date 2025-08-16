@@ -1,9 +1,6 @@
 package com.fightingkorea.platform.domain.trainer.service.impl;
 
-import com.fightingkorea.platform.domain.trainer.dto.TrainerRegisterRequest;
-import com.fightingkorea.platform.domain.trainer.dto.TrainerRegisterResponse;
-import com.fightingkorea.platform.domain.trainer.dto.TrainerResponse;
-import com.fightingkorea.platform.domain.trainer.dto.TrainerUpdateRequest;
+import com.fightingkorea.platform.domain.trainer.dto.*;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.entity.TrainerSpecialty;
 import com.fightingkorea.platform.domain.trainer.exception.TrainerNotFoundException;
@@ -88,10 +85,10 @@ public class TrainerServiceImpl implements TrainerService {
     // 페이징된 트레이너 리스트 조회
     @Transactional(readOnly = true)
     @Override
-    public PageImpl<TrainerResponse> getTrainers(Pageable pageable) {
+    public PageImpl<TrainerResponse> getTrainers(TrainerSearchRequest request, Pageable pageable) {
         log.info("트레이너 목록 조회 요청, 페이지 번호: {}, 페이지 크기: {}", pageable.getPageNumber(), pageable.getPageSize());
 
-        PageImpl<TrainerResponse> result = trainerRepository.findBySomeCondition(pageable);
+        PageImpl<TrainerResponse> result = trainerRepository.search(request, pageable);
 
         log.info("트레이너 목록 조회 완료, 조회 수: {}", result.getNumberOfElements());
 
