@@ -2,6 +2,8 @@ package com.fightingkorea.platform.domain.order.service.impl;
 
 import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
+import com.fightingkorea.platform.domain.order.dto.PaymentRequestDto;
+import com.fightingkorea.platform.domain.order.dto.PaymentRequestRequest;
 import com.fightingkorea.platform.domain.order.dto.PaymentStatusDto;
 import com.fightingkorea.platform.domain.order.dto.TossPaymentResponse;
 import com.fightingkorea.platform.domain.order.dto.VideoPurchaseRequest;
@@ -25,6 +27,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.time.LocalDateTime;
 
 /**
  * 결제 및 주문 관련 처리 서비스 구현 클래스
@@ -114,6 +118,22 @@ public class PurchaseServiceImpl implements PurchaseService {
                 .status(order.getStatus().name())
                 .totalAmount(order.getAmount())
                 .approvedAt(order.getCreatedAt())
+                .build();
+    }
+
+    @Override
+    public PaymentRequestDto requestPayment(PaymentRequestRequest request) {
+        String tossOrderId = UUID.randomUUID().toString();
+        String paymentKey = UUID.randomUUID().toString();
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(10);
+        return PaymentRequestDto.builder()
+                .orderId(request.getOrderId())
+                .tossPaymentKey(paymentKey)
+                .tossOrderId(tossOrderId)
+                .paymentUrl("https://pay.toss.im/" + paymentKey)
+                .status("READY")
+                .amount(request.getTotalAmount())
+                .expiresAt(expiresAt)
                 .build();
     }
 
