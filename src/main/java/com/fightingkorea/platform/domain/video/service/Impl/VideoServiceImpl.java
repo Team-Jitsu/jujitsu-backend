@@ -40,6 +40,12 @@ public class VideoServiceImpl implements VideoService {
     
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<VideoResponse> getVideos(Pageable pageable) {
+        return videoRepository.findAll(pageable).map(this::toDtoWithNoLink);
+    }
+
+    @Override
     public VideoResponse updateVideo(Long videoId, VideoUpdateRequest req) {
         Video video = videoRepository.findVideoByVideoId(videoId)
                 .orElseThrow(VideoNotExistsException::new);

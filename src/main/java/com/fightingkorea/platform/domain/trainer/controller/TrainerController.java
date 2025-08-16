@@ -8,6 +8,9 @@ import com.fightingkorea.platform.domain.trainer.dto.TrainerUpdateRequest;
 import com.fightingkorea.platform.domain.trainer.service.TrainerService;
 import com.fightingkorea.platform.global.UserUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,6 +31,12 @@ public class TrainerController {
     @GetMapping("/me")
     public TrainerResponse getTrainer() {
         return trainerService.getTrainer(UserUtil.getTrainerId());
+    }
+
+    // 트레이너 목록 조회
+    @GetMapping
+    public PageImpl<TrainerResponse> getTrainers(@PageableDefault(size = 20) Pageable pageable) {
+        return trainerService.getTrainers(pageable);
     }
 
     // 트레이너 정보 수정
