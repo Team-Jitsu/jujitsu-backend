@@ -16,7 +16,7 @@ public interface VideoService {
     void deleteVideo(Long videoId);
 
     // 페이징된 특정 유저의 강의 구매 리스트 조회
-    Page<UserVideoResponse> getPurchasedVideoList(Long userId, Pageable pageable);
+    Page<UserVideoResponse> getPurchasedVideoList(Long userId, PurchaseSearchRequest request, Pageable pageable);
 
     VideoResponse uploadVideoMultipart(VideoUploadMultipartRequest req, org.springframework.web.multipart.MultipartFile file);
 

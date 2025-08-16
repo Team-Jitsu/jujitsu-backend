@@ -126,11 +126,11 @@ public class VideoServiceImpl implements VideoService {
     // 비디오 목록, 유저의 비디오 소유 목록
     @Transactional(readOnly = true)
     @Override
-    public Page<UserVideoResponse> getPurchasedVideoList(Long userId, Pageable pageable) {
+    public Page<UserVideoResponse> getPurchasedVideoList(Long userId, PurchaseSearchRequest request, Pageable pageable) {
 
         log.info("강의 구매 목록 조회 시도: userId={}", UserUtil.getUserId());
 
-        Page<UserVideoResponse> userVideoResponses = userVideoRepository.getPurchasedVideoList(userId, pageable);
+        Page<UserVideoResponse> userVideoResponses = userVideoRepository.getPurchasedVideoList(userId, request, pageable);
 
         if (userVideoResponses.isEmpty()) {
             log.info("userId{} 가 구매한 강의 없음", userId);
