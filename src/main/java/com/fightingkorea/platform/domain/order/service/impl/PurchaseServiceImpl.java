@@ -2,7 +2,13 @@ package com.fightingkorea.platform.domain.order.service.impl;
 
 import com.fightingkorea.platform.domain.earning.entity.EarningBuffer;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
+import com.fightingkorea.platform.domain.order.dto.PaymentCompleteDto;
+import com.fightingkorea.platform.domain.order.dto.PaymentRequestDto;
+import com.fightingkorea.platform.domain.order.dto.PaymentRequestRequest;
+import com.fightingkorea.platform.domain.order.dto.PaymentStatusDto;
 import com.fightingkorea.platform.domain.order.dto.TossPaymentResponse;
+import com.fightingkorea.platform.domain.order.dto.TossPaymentWebhookRequest;
+import com.fightingkorea.platform.domain.order.dto.VideoPurchaseDto;
 import com.fightingkorea.platform.domain.order.dto.VideoPurchaseRequest;
 import com.fightingkorea.platform.domain.order.entity.Order;
 import com.fightingkorea.platform.domain.order.entity.OrderStatus;
@@ -24,6 +30,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 /**
  * 결제 및 주문 관련 처리 서비스 구현 클래스
@@ -97,6 +106,51 @@ public class PurchaseServiceImpl implements PurchaseService {
         // 로그는 handler 에서 처리하므로 여기서 제거 가능
 
         return orderRepository.save(order);
+    }
+
+    /**
+     * 결제 상태 조회
+     */
+    @Override
+    public PaymentStatusDto getPaymentStatus(String paymentKey) {
+        Order order = orderRepository.findByPaymentKey(paymentKey)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + paymentKey));
+
+        return PaymentStatusDto.builder()
+                .paymentKey(order.getPaymentKey())
+                .orderId(order.getTossOrderId())
+                .status(order.getStatus().name())
+                .totalAmount(order.getAmount())
+                .approvedAt(order.getCreatedAt())
+                .build();
+    }
+
+    @Override
+    public PaymentRequestDto requestPayment(PaymentRequestRequest request) {
+        String tossOrderId = UUID.randomUUID().toString();
+        String paymentKey = UUID.randomUUID().toString();
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(10);
+        return PaymentRequestDto.builder()
+                .orderId(request.getOrderId())
+                .tossPaymentKey(paymentKey)
+                .tossOrderId(tossOrderId)
+                .paymentUrl("https://pay.toss.im/" + paymentKey)
+                .status("READY")
+                .amount(request.getTotalAmount())
+                .expiresAt(expiresAt)
+                .build();
+    }
+
+    @Override
+    public PaymentCompleteDto completePayment(TossPaymentWebhookRequest request) {
+        return PaymentCompleteDto.builder()
+                .paymentId(System.currentTimeMillis())
+                .orderId(request.getOrderId())
+                .status(request.getStatus())
+                .completedAt(LocalDateTime.now())
+                .purchasedVideos(Collections.<VideoPurchaseDto>emptyList())
+                .totalAmount(request.getTotalAmount())
+                .build();
     }
 
     /**
