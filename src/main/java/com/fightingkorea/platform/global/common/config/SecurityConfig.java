@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api/auth/**",
-                                "/api/users/register"
+                                "/api/users/register",
+                                "/api/trainers/register"
                         ).permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/specialties").permitAll()          // 전문분야 목록
