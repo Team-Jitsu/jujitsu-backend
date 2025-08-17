@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 "/api/trainers/register"
                         ).permitAll()
 
+
                         .requestMatchers(HttpMethod.GET, "/api/specialties").permitAll()          // 전문분야 목록
                         .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()           // 카테고리 목록
                         .requestMatchers(HttpMethod.GET, "/api/videos").permitAll()               // 비디오 목록 조회
