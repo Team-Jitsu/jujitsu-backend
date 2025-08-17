@@ -4,6 +4,7 @@ import com.fightingkorea.platform.global.auth.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -32,11 +33,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                /*
-                  RESTful API는 무상태(stateless) 원칙
-                  JWT 기반 인증에서는 서버가 상태(session)를 보존하지 않음 → 클라이언트가 JWT를 매 요청마다 전송
-                  그러므로 세션은 필요없음
-                 */
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -47,14 +43,25 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/api/auth/**",
                                 "/api/users/register"
-                        )
-                        .permitAll() // 인증 필요없음 -> filter 미실행
+                        ).permitAll()
 
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")// ADMIN만 접근
+                        .requestMatchers(HttpMethod.GET, "/api/specialties").permitAll()          // 전문분야 목록
+                        .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()           // 카테고리 목록
+                        .requestMatchers(HttpMethod.GET, "/api/videos").permitAll()               // 비디오 목록 조회
+                        .requestMatchers(HttpMethod.GET, "/api/videos/*").permitAll()             // 비디오 상세 조회
+                        .requestMatchers(HttpMethod.GET, "/api/trainers").permitAll()             // 트레이너 목록 조회
+                        .requestMatchers(HttpMethod.GET, "/api/trainers/*").permitAll()           // 트레이너 상세 조회
+                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll()               // 강의/트레이너 검색
+                        .requestMatchers(HttpMethod.GET, "/api/categories/*/videos").permitAll()  // 특정 카테고리의 비디오 목록
+                        .requestMatchers(HttpMethod.GET, "/api/trainers/*/videos").permitAll()    // 특정 트레이너의 비디오 목록
 
-                        .anyRequest().authenticated() // 그 외는 인증 필요
+                        // ADMIN 전용 API
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // 나머지 모든 요청은 인증 필요
+                        .anyRequest().authenticated()
                 )
-                .exceptionHandling(e -> e // 인증 실패시 예외 처리
+                .exceptionHandling(e -> e
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
