@@ -59,6 +59,8 @@ jobs:
           jwt.access.secret.key=${{ secrets.JWT_ACCESS_SECRET }}
           jwt.refresh.secret.key=${{ secrets.JWT_REFRESH_SECRET }}
           toss.payments.secret.key=${{ secrets.TOSS_PAYMENTS_SECRET_KEY }}
+          cloud.aws.credentials.access-key=${{ secrets.AWS_ACCESS_KEY_ID }}
+          cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           EOL
 
       # jar + application.properties만 복사
