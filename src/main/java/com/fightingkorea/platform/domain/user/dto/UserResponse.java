@@ -1,5 +1,6 @@
 package com.fightingkorea.platform.domain.user.dto;
 
+import com.fightingkorea.platform.domain.user.entity.type.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class UserResponse {
     /**
      * 권한
      */
-    private String role;
+    private Role role;
 
     /**
      * 생성 시간

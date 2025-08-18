@@ -21,7 +21,7 @@ import java.util.List;
 public class ResponseMapper {
     public static UserResponse toUserResponse(User user) {
         return new UserResponse(user.getUserId(), user.getNickname(),
-                user.getRole().getLabel(), user.getCreatedAt());
+                user.getRole(), user.getCreatedAt());
     }
 
     public static SpecialtyResponse toSpecialtyResponse(Specialty specialty) {
