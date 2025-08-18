@@ -69,7 +69,5 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
           port: 22
-          source: |
-            target/*.jar
-            target/application.properties
+          source: "target/*.jar,target/application.properties"
           target: /home/ubuntu/app
