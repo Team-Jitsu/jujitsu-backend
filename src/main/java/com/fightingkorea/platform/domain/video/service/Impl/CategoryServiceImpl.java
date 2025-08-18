@@ -56,8 +56,8 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<VideoCategory> videoCategories = categoryIds.stream()
                 .map(categoryId -> VideoCategory.createVideoCategory(
-                        categoryId,
-                        videoId
+                        videoId,
+                        categoryId
                 ))
                 .toList();
 
