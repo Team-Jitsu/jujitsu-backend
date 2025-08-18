@@ -26,6 +26,10 @@ public class VideoCategory {
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "video_id", insertable = false, updatable = false)
+    private Video video;
+
     public VideoCategory(Long videoId, Long categoryId) {
         this.videoId = videoId;
         this.categoryId = categoryId;
