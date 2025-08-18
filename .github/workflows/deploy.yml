@@ -21,7 +21,7 @@ jobs:
       - name: Build with Maven (skip tests)
         run: mvn clean package -DskipTests
 
-      # JAR와 같은 계층(target/)에 properties 파일 생성
+      # target/ 디렉토리에 application.properties 생성
       - name: Create application.properties
         run: |
           cat > target/application.properties <<EOL
@@ -61,6 +61,7 @@ jobs:
           toss.payments.secret.key=${{ secrets.TOSS_PAYMENTS_SECRET_KEY }}
           EOL
 
+      # jar + application.properties만 복사
       - name: Copy JAR and properties to server
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -68,5 +69,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
           port: 22
-          source: target/*
+          source: |
+            target/*.jar
+            target/application.properties
           target: /home/ubuntu/app
