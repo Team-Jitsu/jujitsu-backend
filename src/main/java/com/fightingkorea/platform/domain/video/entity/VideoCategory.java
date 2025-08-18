@@ -23,15 +23,17 @@ public class VideoCategory {
     private Long categoryId; // 카테고리 아이디
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "video_id")
-    private Video video;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
 
+    public VideoCategory(Long videoId, Long categoryId) {
+        this.videoId = videoId;
+        this.categoryId = categoryId;
+    }
+
+
     public static VideoCategory createVideoCategory(Long videoId, Long categoryId){
-        return new VideoCategory(videoId, categoryId, null, null);
+        return new VideoCategory(videoId, categoryId);
     }
 
 }
