@@ -8,4 +8,6 @@ public interface UserVideoRepository extends JpaRepository<UserVideo, Long>, Cus
 
     long countByVideo_VideoCategories_CategoryId(Long categoryId);
     long countByVideo_VideoId(Long videoId);
+
+    boolean existsByUser_UserIdAndVideo_VideoId(Long userId, Long videoId);
 }

@@ -192,6 +192,7 @@ public class VideoServiceImpl implements VideoService {
                 .s3Key(key)
                 .playUrl(read.url())
                 .urlExpires(read.expiresAt())
+                .trainer(ResponseMapper.toTrainerSummaryResponse(video.getTrainer()))
                 .build();
     }
 
@@ -200,16 +201,27 @@ public class VideoServiceImpl implements VideoService {
     @Override
     @Transactional(readOnly = true)
     public VideoResponse getPlayUrl(Long videoId) {
-        Video v = videoRepository.getReferenceById(videoId);
-        var read = s3.createPresignedGet(v.getS3Key(), Duration.ofHours(1));
+        Long currentUserId = UserUtil.getUserId();
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(VideoNotExistsException::new);
+
+        boolean isPurchased = userVideoRepository.existsByUser_UserIdAndVideo_VideoId(currentUserId, videoId);
+        boolean isUploader = video.getTrainer().getUser().getUserId().equals(currentUserId);
+
+        if (!isPurchased && !isUploader) {
+            throw new UnauthorizedAccessException("이 영상에 접근할 권한이 없습니다.");
+        }
+
+        var read = s3.createPresignedGet(video.getS3Key(), Duration.ofHours(1));
         return VideoResponse.builder()
-                .videoId(v.getVideoId())
-                .title(v.getTitle())
-                .description(v.getDescription())
-                .price(v.getPrice())
-                .s3Key(v.getS3Key())
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .price(video.getPrice())
+                .s3Key(video.getS3Key())
                 .playUrl(read.url())
                 .urlExpires(read.expiresAt())
+                .trainer(ResponseMapper.toTrainerSummaryResponse(video.getTrainer()))
                 .build();
     }
 
@@ -224,6 +236,7 @@ public class VideoServiceImpl implements VideoService {
                 .description(video.getDescription())
                 .price(video.getPrice())
                 .s3Key(video.getS3Key())
+                .trainer(ResponseMapper.toTrainerSummaryResponse(video.getTrainer()))
                 .build();
     }
 

@@ -13,6 +13,7 @@ import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.video.dto.CategoryResponse;
 import com.fightingkorea.platform.domain.video.dto.VideoResponse;
+import com.fightingkorea.platform.domain.video.dto.TrainerSummaryResponse;
 import com.fightingkorea.platform.domain.video.entity.Category;
 import com.fightingkorea.platform.domain.video.entity.Video;
 
@@ -43,6 +44,14 @@ public class ResponseMapper {
         );
     }
 
+    public static TrainerSummaryResponse toTrainerSummaryResponse(Trainer trainer) {
+        return TrainerSummaryResponse.builder()
+                .trainerId(trainer.getTrainerId())
+                .nickname(trainer.getUser().getNickname())
+                .bio(trainer.getBio())
+                .build();
+    }
+
     public static VideoResponse toVideoResponse(Video video) {
         return VideoResponse.builder()
                 .videoId(video.getVideoId())
@@ -50,6 +59,7 @@ public class ResponseMapper {
                 .description(video.getDescription())
                 .price(video.getPrice())
                 .s3Key(video.getS3Key())
+                .trainer(toTrainerSummaryResponse(video.getTrainer()))
                 .build();
     }
 
