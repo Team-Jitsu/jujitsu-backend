@@ -3,7 +3,6 @@ package com.fightingkorea.platform.domain.video.service.Impl;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
-import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.video.dto.*;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.entity.Video;
@@ -41,8 +40,8 @@ public class VideoServiceImpl implements VideoService {
     private final CategoryService categoryService;
     private final EarningBufferRepository earningBufferRepository;
     private final S3VideoStorageService s3;
-    private final UserRepository userRepository;
 
+    
 
     @Override
     @Transactional(readOnly = true)
@@ -193,6 +192,7 @@ public class VideoServiceImpl implements VideoService {
                 .s3Key(key)
                 .playUrl(read.url())
                 .urlExpires(read.expiresAt())
+                .trainer(ResponseMapper.toTrainerSummaryResponse(video.getTrainer()))
                 .build();
     }
 
@@ -201,18 +201,27 @@ public class VideoServiceImpl implements VideoService {
     @Override
     @Transactional(readOnly = true)
     public VideoResponse getPlayUrl(Long videoId) {
-        userRepository.findByUserId(UserUtil.getUserId());
+        Long currentUserId = UserUtil.getUserId();
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(VideoNotExistsException::new);
 
-        Video v = videoRepository.getReferenceById(videoId);
-        var read = s3.createPresignedGet(v.getS3Key(), Duration.ofHours(1));
+        boolean isPurchased = userVideoRepository.existsByUser_UserIdAndVideo_VideoId(currentUserId, videoId);
+        boolean isUploader = video.getTrainer().getUser().getUserId().equals(currentUserId);
+
+        if (!isPurchased && !isUploader) {
+            throw new UnauthorizedAccessException("이 영상에 접근할 권한이 없습니다.");
+        }
+
+        var read = s3.createPresignedGet(video.getS3Key(), Duration.ofHours(1));
         return VideoResponse.builder()
-                .videoId(v.getVideoId())
-                .title(v.getTitle())
-                .description(v.getDescription())
-                .price(v.getPrice())
-                .s3Key(v.getS3Key())
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .price(video.getPrice())
+                .s3Key(video.getS3Key())
                 .playUrl(read.url())
                 .urlExpires(read.expiresAt())
+                .trainer(ResponseMapper.toTrainerSummaryResponse(video.getTrainer()))
                 .build();
     }
 
@@ -227,6 +236,7 @@ public class VideoServiceImpl implements VideoService {
                 .description(video.getDescription())
                 .price(video.getPrice())
                 .s3Key(video.getS3Key())
+                .trainer(ResponseMapper.toTrainerSummaryResponse(video.getTrainer()))
                 .build();
     }
 

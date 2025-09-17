@@ -12,6 +12,7 @@ import com.fightingkorea.platform.domain.user.exception.*;
 import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.user.service.UserService;
 import com.fightingkorea.platform.domain.video.dto.UserVideoResponse;
+import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.global.common.response.ResponseMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final UserRepository userRepository;
+    private final UserVideoRepository userVideoRepository;
 
     @Override
     public UserResponse registerUser(UserRegisterRequest userRegisterRequest, Role role) {
@@ -177,6 +179,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserVideoResponse purchaseVideo(Long videoId) {
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isVideoPurchased(Long userId, Long videoId) {
+        return userVideoRepository.existsByUser_UserIdAndVideo_VideoId(userId, videoId);
     }
 
     private boolean containsForbiddenWords(String nickname) {

@@ -85,4 +85,7 @@ public interface UserService {
 
     // 강의 구매
     UserVideoResponse purchaseVideo(Long videoId);
+
+    // 특정 영상 구매 여부 확인
+    boolean isVideoPurchased(Long userId, Long videoId);
 }

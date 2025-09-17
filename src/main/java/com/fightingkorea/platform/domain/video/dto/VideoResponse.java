@@ -14,4 +14,7 @@ public class VideoResponse {
     private String s3Key;
     private String playUrl;     // GET presigned URL
     private Instant urlExpires; // 만료시각
+
+    // 강의 업로더 정보
+    private TrainerSummaryResponse trainer;
 }

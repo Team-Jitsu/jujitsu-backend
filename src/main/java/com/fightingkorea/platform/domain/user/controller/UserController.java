@@ -142,6 +142,13 @@ public class UserController {
         return videoService.getPurchasedVideoList(UserUtil.getUserId(), request, pageable);
     }
 
+    // 특정 영상 구매 여부 확인
+    @GetMapping("/me/purchases/{videoId}/check")
+    public ResponseEntity<Boolean> checkVideoPurchase(@PathVariable Long videoId) {
+        boolean isPurchased = userService.isVideoPurchased(UserUtil.getUserId(), videoId);
+        return ResponseEntity.ok(isPurchased);
+    }
+
 
     // 강의 구매 내역을 삭제하는 메서드
     @DeleteMapping("/{user-video}")
