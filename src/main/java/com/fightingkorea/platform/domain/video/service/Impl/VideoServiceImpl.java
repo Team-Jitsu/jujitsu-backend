@@ -3,6 +3,7 @@ package com.fightingkorea.platform.domain.video.service.Impl;
 import com.fightingkorea.platform.domain.earning.repository.EarningBufferRepository;
 import com.fightingkorea.platform.domain.trainer.entity.Trainer;
 import com.fightingkorea.platform.domain.trainer.repository.TrainerRepository;
+import com.fightingkorea.platform.domain.user.repository.UserRepository;
 import com.fightingkorea.platform.domain.video.dto.*;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
 import com.fightingkorea.platform.domain.video.entity.Video;
@@ -40,8 +41,8 @@ public class VideoServiceImpl implements VideoService {
     private final CategoryService categoryService;
     private final EarningBufferRepository earningBufferRepository;
     private final S3VideoStorageService s3;
+    private final UserRepository userRepository;
 
-    
 
     @Override
     @Transactional(readOnly = true)
@@ -200,6 +201,8 @@ public class VideoServiceImpl implements VideoService {
     @Override
     @Transactional(readOnly = true)
     public VideoResponse getPlayUrl(Long videoId) {
+        userRepository.findByUserId(UserUtil.getUserId());
+
         Video v = videoRepository.getReferenceById(videoId);
         var read = s3.createPresignedGet(v.getS3Key(), Duration.ofHours(1));
         return VideoResponse.builder()

@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<User> getUsers(String nickname, Sex sex, Role role,
+    public Page<UserResponse> getUsers(String nickname, Sex sex, Role role,
                                LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable) {
 
         // 1. 날짜 범위 유효성 체크
@@ -120,7 +120,12 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException();
         }
 
-        return users;
+        return users.map(u -> new UserResponse(
+                u.getUserId(),
+                u.getNickname(),
+                u.getRole(),
+                u.getCreatedAt()
+        ));
     }
 
     /**
