@@ -67,8 +67,6 @@ public class SecurityConfig {
                                                                                                                        // 트레이너의
                                                                                                                        // 비디오
                                                                                                                        // 목록
-                                                .requestMatchers(HttpMethod.GET, "/api/admin/trainers/by-email")
-                                                .permitAll() // 임시: 이메일로 트레이너 찾기
 
                                                 // ADMIN 전용 API
                                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
