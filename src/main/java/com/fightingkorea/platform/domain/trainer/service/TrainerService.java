@@ -9,6 +9,8 @@ public interface TrainerService {
 
     TrainerResponse getTrainer(Long trainerId);
 
+    TrainerResponse getTrainerByEmail(String email);
+
     PageImpl<TrainerResponse> getTrainers(Pageable pageable);
 
     PageImpl<TrainerResponse> getTrainers(TrainerSearchRequest request, Pageable pageable);

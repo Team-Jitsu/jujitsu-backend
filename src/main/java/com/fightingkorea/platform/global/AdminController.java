@@ -61,8 +61,7 @@ public class AdminController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "latest") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortOrder
-    ) {
+            @RequestParam(defaultValue = "desc") String sortOrder) {
         AdminVideoSearchRequest request = AdminVideoSearchRequest.builder()
                 .page(page)
                 .perPage(perPage)
@@ -82,8 +81,7 @@ public class AdminController {
             @RequestParam(required = false) String searchTerm,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "latest") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortOrder
-    ) {
+            @RequestParam(defaultValue = "desc") String sortOrder) {
         AdminEarningSearchRequest request = AdminEarningSearchRequest.builder()
                 .page(page)
                 .perPage(perPage)
@@ -118,7 +116,7 @@ public class AdminController {
     @PreAuthorize("ROLE_ADMIN")
     @PutMapping("/users/{user-id}")
     public UserResponse updateUserActive(@PathVariable("user-id") Long userId,
-                                         @RequestParam Boolean isActive) {
+            @RequestParam Boolean isActive) {
         UserResponse userResponse = userService.updateUserActive(userId, isActive);
 
         return userResponse;
@@ -130,6 +128,13 @@ public class AdminController {
     public PageImpl<TrainerResponse> getTrainers(@RequestParam Pageable pageable) {
 
         return trainerService.getTrainers(pageable);
+    }
+
+    // 이메일로 트레이너 찾기 (관리자용)
+    @PreAuthorize("ROLE_ADMIN")
+    @GetMapping("/trainers/by-email")
+    public TrainerResponse getTrainerByEmail(@RequestParam String email) {
+        return trainerService.getTrainerByEmail(email);
     }
 
     // 정산

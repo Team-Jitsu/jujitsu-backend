@@ -49,8 +49,7 @@ public class TrainerServiceImpl implements TrainerService {
                 request.getAccountOwnerName(),
                 request.getBio(),
                 request.getAccountNumber(),
-                request.getAutomaticSettlement()
-        );
+                request.getAutomaticSettlement());
         trainerRepository.save(trainer);
 
         // 전문 분야 설정
@@ -62,8 +61,7 @@ public class TrainerServiceImpl implements TrainerService {
                 trainer.getTrainerId(),
                 trainer.getAutomaticSettlement(),
                 request.getSpecialtyIds(),
-                ResponseMapper.toUserResponse(user)
-        );
+                ResponseMapper.toUserResponse(user));
     }
 
     // 단일 트레이너 조회, 없으면 예외 발생
@@ -78,6 +76,23 @@ public class TrainerServiceImpl implements TrainerService {
         List<TrainerSpecialty> trainerSpecialtyList = trainerSpecialtyRepository.findByTrainerTrainerId(trainerId);
 
         log.info("트레이너 조회 성공, 트레이너 ID: {}", trainerId);
+
+        return ResponseMapper.toTrainerResponse(trainer, trainerSpecialtyList);
+    }
+
+    // 이메일로 트레이너 조회
+    @Transactional(readOnly = true)
+    @Override
+    public TrainerResponse getTrainerByEmail(String email) {
+        log.info("이메일로 트레이너 조회 요청, 이메일: {}", email);
+
+        Trainer trainer = trainerRepository.findByUserEmail(email)
+                .orElseThrow(() -> new TrainerNotFoundException("해당 이메일의 트레이너를 찾을 수 없습니다: " + email));
+
+        List<TrainerSpecialty> trainerSpecialtyList = trainerSpecialtyRepository
+                .findByTrainerTrainerId(trainer.getTrainerId());
+
+        log.info("이메일로 트레이너 조회 성공, 트레이너 ID: {}", trainer.getTrainerId());
 
         return ResponseMapper.toTrainerResponse(trainer, trainerSpecialtyList);
     }
@@ -103,7 +118,6 @@ public class TrainerServiceImpl implements TrainerService {
         Trainer trainer = trainerRepository.findById(trainerUpdateRequest.getTrainerId())
                 .orElseThrow(TrainerNotFoundException::new);
 
-
         // 정보 수정
         trainer.updateInfo(trainerUpdateRequest);
         specialtyService.setTrainerSpecialties(trainer.getTrainerId(), trainerUpdateRequest.getSpecialtyIds());
@@ -125,8 +139,8 @@ public class TrainerServiceImpl implements TrainerService {
         // 각 트레이너에 대한 Specialty 조회 후 매핑
         List<TrainerResponse> responses = trainerPage.stream()
                 .map(trainer -> {
-                    List<TrainerSpecialty> specialties =
-                            trainerSpecialtyRepository.findByTrainerTrainerId(trainer.getTrainerId());
+                    List<TrainerSpecialty> specialties = trainerSpecialtyRepository
+                            .findByTrainerTrainerId(trainer.getTrainerId());
                     return ResponseMapper.toTrainerResponse(trainer, specialties);
                 })
                 .toList();
@@ -135,6 +149,5 @@ public class TrainerServiceImpl implements TrainerService {
 
         return new PageImpl<>(responses, pageable, trainerPage.getTotalElements());
     }
-
 
 }
