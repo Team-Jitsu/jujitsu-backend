@@ -101,7 +101,7 @@ public class UserController {
      * @return
      */
     @GetMapping
-    public Page<User> getUsers(
+    public Page<UserResponse> getUsers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Sex sex,
             @RequestParam(required = false) Role role,

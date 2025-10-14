@@ -54,7 +54,7 @@ public interface UserService {
      * @param pageable
      * @return
      */
-    Page<User> getUsers(String name, Sex sex, Role role,
+    Page<UserResponse> getUsers(String name, Sex sex, Role role,
                         LocalDateTime fromDate, LocalDateTime toDate, Pageable pageable);
 
     /**

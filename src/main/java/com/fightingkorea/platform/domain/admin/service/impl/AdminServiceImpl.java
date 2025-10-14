@@ -7,13 +7,16 @@ import com.fightingkorea.platform.domain.earning.repository.EarningQueryReposito
 import com.fightingkorea.platform.domain.video.entity.Video;
 import com.fightingkorea.platform.domain.video.repository.UserVideoRepository;
 import com.fightingkorea.platform.domain.video.repository.VideoQueryRepository;
+import com.fightingkorea.platform.domain.video.repository.VideoRepository;
 import com.fightingkorea.platform.global.common.response.PaginatedResponse;
 import com.fightingkorea.platform.global.common.response.PaginationInfo;
 import com.querydsl.jpa.impl.JPAQuery;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class AdminServiceImpl implements AdminService {
     private final VideoQueryRepository videoQueryRepository;
     private final UserVideoRepository userVideoRepository;
     private final EarningQueryRepository earningQueryRepository;
+    private final VideoRepository videoRepository;
 
     @Override
     public PaginatedResponse<AdminVideoResponse> getAdminVideos(AdminVideoSearchRequest request) {
@@ -110,5 +114,34 @@ public class AdminServiceImpl implements AdminService {
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void updateAdminVideo(Long videoId, Map<String, Object> updateData) {
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new RuntimeException("강의를 찾을 수 없습니다."));
+
+        if (updateData.containsKey("title")) {
+            video.updateVideo(
+                    updateData.get("title").toString(),
+                    updateData.get("description") != null ? updateData.get("description").toString() : video.getDescription()
+            );
+        }
+
+        if (updateData.containsKey("price")) {
+            video.updatePrice((Integer) updateData.get("price"));
+        }
+
+        videoRepository.save(video);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAdminVideo(Long videoId) {
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new RuntimeException("강의를 찾을 수 없습니다."));
+
+        videoRepository.delete(video);
     }
 }
