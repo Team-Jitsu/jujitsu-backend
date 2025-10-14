@@ -8,7 +8,11 @@ import java.util.List;
 public class TrainerNotFoundException extends NotFoundException {
     public TrainerNotFoundException() {
         super(List.of(
-                new ErrorResponse.FieldError("trainer_id", "존재하지 않는 선수입니다.")
-        ));
+                new ErrorResponse.FieldError("trainer_id", "존재하지 않는 선수입니다.")));
+    }
+
+    public TrainerNotFoundException(String message) {
+        super(List.of(
+                new ErrorResponse.FieldError("trainer_id", message)));
     }
 }
