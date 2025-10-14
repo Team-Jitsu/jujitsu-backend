@@ -53,7 +53,7 @@ public class AdminController {
      * 관리자가 회원을 생성하는 메서드.
      *
      * @param userRegisterRequest 회원 생성 요청
-     * @param role 회원 권한
+     * @param role                회원 권한
      * @return 생성된 회원 정보
      */
     @PreAuthorize("hasRole('ADMIN')")
@@ -150,7 +150,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/users/{user-id}/profile")
     public UserResponse updateUserProfile(@PathVariable("user-id") Long userId,
-                                          @RequestBody @Validated UserUpdateRequest userUpdateRequest) {
+            @RequestBody @Validated UserUpdateRequest userUpdateRequest) {
         return userService.updateUser(userId, userUpdateRequest);
     }
 
@@ -191,7 +191,7 @@ public class AdminController {
     }
 
     // 이메일로 트레이너 찾기 (관리자용)
-    @PreAuthorize("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/trainers/by-email")
     public TrainerResponse getTrainerByEmail(@RequestParam String email) {
         return trainerService.getTrainerByEmail(email);
