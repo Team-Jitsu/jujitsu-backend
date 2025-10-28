@@ -46,7 +46,7 @@ public class User {
     @Column(length = 100)
     private String nickname; // 닉네임 (선택)
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String region; // 거주 지역
 
     @Column(nullable = false, columnDefinition = "tinyint(1)")
