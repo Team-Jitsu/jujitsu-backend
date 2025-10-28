@@ -28,4 +28,15 @@ public class TrainerResponse {
     private List<SpecialtyResponse> specialties;
 
     private UserResponse user;
+
+    public TrainerResponse(Long trainerId, String accountOwnerName, String accountNumber,
+                           String bio, Boolean automaticSettlement, Integer charge, UserResponse user) {
+        this.trainerId = trainerId;
+        this.accountOwnerName = accountOwnerName;
+        this.accountNumber = accountNumber;
+        this.bio = bio;
+        this.automaticSettlement = automaticSettlement;
+        this.charge = charge;
+        this.user = user;
+    }
 }

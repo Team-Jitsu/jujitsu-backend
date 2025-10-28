@@ -58,19 +58,19 @@ public class CustomTrainerRepositoryImpl implements CustomTrainerRepository {
         }
 
         List<TrainerResponse> contents = queryFactory
-                .select(Projections.constructor(TrainerResponse.class,
+                .select(Projections.bean(TrainerResponse.class,
                         trainer.trainerId,
                         trainer.accountOwnerName,
                         trainer.accountNumber,
                         trainer.bio,
                         trainer.automaticSettlement,
                         trainer.charge,
-                        Projections.constructor(UserResponse.class,
+                        Projections.bean(UserResponse.class, // UserResponse도 bean 매핑
                                 user.userId,
                                 user.nickname,
                                 user.role,
                                 user.createdAt
-                        )
+                        ).as("user") // TrainerResponse의 user 필드에 매핑
                 ))
                 .from(trainer)
                 .join(trainer.user, user)
