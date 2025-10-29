@@ -2,7 +2,6 @@ package com.fightingkorea.platform.domain.video.exception;
 
 import com.fightingkorea.platform.global.common.exception.ErrorResponse;
 import com.fightingkorea.platform.global.common.exception.ForbiddenException;
-import com.fightingkorea.platform.global.common.exception.ValidationException;
 
 import java.util.List;
 
