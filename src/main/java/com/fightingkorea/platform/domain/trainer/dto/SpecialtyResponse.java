@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SpecialtyResponse {
-    private Long specialtyId;
+    private long specialtyId;
 
     private String specialtyName;
 }

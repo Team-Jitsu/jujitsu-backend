@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class TrainerResponse {
-    private Long trainerId;
+    private long trainerId;
 
     private String accountOwnerName;
 
@@ -21,16 +21,16 @@ public class TrainerResponse {
 
     private String bio;
 
-    private Boolean automaticSettlement;
+    private boolean automaticSettlement;
 
-    private Integer charge;
+    private int charge;
 
     private List<SpecialtyResponse> specialties;
 
     private UserResponse user;
 
-    public TrainerResponse(Long trainerId, String accountOwnerName, String accountNumber,
-                           String bio, Boolean automaticSettlement, Integer charge, UserResponse user) {
+    public TrainerResponse(long trainerId, String accountOwnerName, String accountNumber,
+                           String bio, boolean automaticSettlement, int charge, UserResponse user) {
         this.trainerId = trainerId;
         this.accountOwnerName = accountOwnerName;
         this.accountNumber = accountNumber;

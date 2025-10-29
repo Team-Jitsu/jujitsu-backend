@@ -17,7 +17,7 @@ public class UserResponse {
     /**
      * 아이디
      */
-    private Long userId;
+    private long userId;
 
     /**
      * 닉네임
