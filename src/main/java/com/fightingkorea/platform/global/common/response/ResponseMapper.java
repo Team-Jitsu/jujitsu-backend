@@ -40,7 +40,8 @@ public class ResponseMapper {
                 trainerSpecialtyList.stream()
                         .map(ts -> toSpecialtyResponse(ts.getSpecialty()))
                         .toList(),
-                ResponseMapper.toUserResponse(trainer.getUser())
+                ResponseMapper.toUserResponse(trainer.getUser()),
+                trainer.getUser().getEmail()
         );
     }
 

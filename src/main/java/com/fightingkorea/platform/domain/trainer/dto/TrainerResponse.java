@@ -29,8 +29,10 @@ public class TrainerResponse {
 
     private UserResponse user;
 
+    private String email;
+
     public TrainerResponse(long trainerId, String accountOwnerName, String accountNumber,
-                           String bio, boolean automaticSettlement, int charge, UserResponse user) {
+                           String bio, boolean automaticSettlement, int charge, UserResponse user, String email) {
         this.trainerId = trainerId;
         this.accountOwnerName = accountOwnerName;
         this.accountNumber = accountNumber;
@@ -38,5 +40,6 @@ public class TrainerResponse {
         this.automaticSettlement = automaticSettlement;
         this.charge = charge;
         this.user = user;
+        this.email = email;
     }
 }

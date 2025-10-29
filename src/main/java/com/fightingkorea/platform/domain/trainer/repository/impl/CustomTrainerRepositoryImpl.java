@@ -70,7 +70,8 @@ public class CustomTrainerRepositoryImpl implements CustomTrainerRepository {
                                 user.nickname,
                                 user.role,
                                 user.createdAt
-                        ).as("user") // TrainerResponse의 user 필드에 매핑
+                        ).as("user"), // TrainerResponse의 user 필드에 매핑
+                        trainer.user.email
                 ))
                 .from(trainer)
                 .join(trainer.user, user)
