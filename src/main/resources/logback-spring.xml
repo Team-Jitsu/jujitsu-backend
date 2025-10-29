@@ -44,7 +44,7 @@
         </root>
 
         <!-- API 응답 로깅: DEBUG=표시, INFO=숨김 -->
-        <logger name="com.ballon.global.common.response.GlobalResponseWrapper" level="INFO"/>
+        <logger name="com.fightingkorea.platform.global.common.response.GlobalResponseWrapper" level="INFO"/>
 
         <!-- SQL 쿼리 로깅: DEBUG=표시, WARN=숨김 -->
         <logger name="org.hibernate.SQL" level="WARN"/>
