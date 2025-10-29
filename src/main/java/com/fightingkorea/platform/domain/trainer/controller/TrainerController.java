@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,19 +40,13 @@ public class TrainerController {
     // 트레이너 목록 조회
     @GetMapping
     public PageImpl<TrainerResponse> getTrainers(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer perPage,
+            @PageableDefault(page = 0, size = 20) Pageable pageable,
             @RequestParam(required = false) Long specialtyId,
             @RequestParam(required = false) String region,
             @RequestParam(required = false) String search,
             @RequestParam(required = false, defaultValue = "joinDate") String sortBy,
             @RequestParam(required = false, defaultValue = "desc") String sortOrder
     ) {
-        int p = (page == null || page < 1) ? 0 : page - 1;
-        int size = (perPage == null) ? 20 : Math.min(perPage, 100);
-
-        Pageable pageable = PageRequest.of(p, size);
-
         TrainerSearchRequest request = TrainerSearchRequest.builder()
                 .specialtyId(specialtyId)
                 .region(region)
