@@ -12,6 +12,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
@@ -42,13 +43,22 @@ public class S3VideoStorageService {
         return "%s/%s.%s".formatted(basePath, UUID.randomUUID(), ext.toLowerCase());
     }
 
-    /** 서버에서 직접 업로드 */
+    /** 서버에서 직접 업로드 (byte 배열 사용 - 작은 파일용) */
     public void putObject(String key, byte[] bytes, String contentType) {
         PutObjectRequest req = PutObjectRequest.builder()
                 .bucket(bucket).key(key)
                 .contentType(contentType != null ? contentType : MediaType.APPLICATION_OCTET_STREAM_VALUE)
                 .build();
         s3.putObject(req, RequestBody.fromBytes(bytes));
+    }
+
+    /** 서버에서 직접 업로드 (InputStream 사용 - 대용량 파일 스트리밍) */
+    public void putObject(String key, InputStream inputStream, long contentLength, String contentType) {
+        PutObjectRequest req = PutObjectRequest.builder()
+                .bucket(bucket).key(key)
+                .contentType(contentType != null ? contentType : MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                .build();
+        s3.putObject(req, RequestBody.fromInputStream(inputStream, contentLength));
     }
 
     /** 클라이언트 직업로드용 Pre-Signed PUT URL */

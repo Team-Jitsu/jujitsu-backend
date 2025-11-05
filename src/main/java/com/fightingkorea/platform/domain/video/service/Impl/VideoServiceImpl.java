@@ -173,8 +173,9 @@ public class VideoServiceImpl implements VideoService {
         Trainer trainer = trainerRepository.getReferenceById(req.getTrainerId());
 
         String key = s3.newVideoKey(file.getOriginalFilename());
-        try {
-            s3.putObject(key, file.getBytes(), file.getContentType());
+        try (var inputStream = file.getInputStream()) {
+            // 스트리밍 방식으로 업로드하여 메모리 사용량 최소화
+            s3.putObject(key, inputStream, file.getSize(), file.getContentType());
         } catch (Exception e) {
             throw new RuntimeException("S3 업로드 실패", e);
         }
