@@ -4,7 +4,6 @@ import com.fightingkorea.platform.domain.user.dto.PasswordUpdateRequest;
 import com.fightingkorea.platform.domain.user.dto.UserRegisterRequest;
 import com.fightingkorea.platform.domain.user.dto.UserResponse;
 import com.fightingkorea.platform.domain.user.dto.UserUpdateRequest;
-import com.fightingkorea.platform.domain.user.entity.User;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.service.UserService;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -108,7 +105,10 @@ public class UserController {
             @RequestParam(required = false) LocalDateTime fromDate,
             @RequestParam(required = false) LocalDateTime toDate,
             Pageable pageable) {
-        return userService.getUsers(name, sex, role, fromDate, toDate, pageable);
+        int page = Math.max(0, pageable.getPageNumber());
+        int size = pageable.getPageSize() <= 0 ? 20 : Math.min(pageable.getPageSize(), 100);
+        Pageable fixed = PageRequest.of(page, size, pageable.getSort());
+        return userService.getUsers(name, sex, role, fromDate, toDate, fixed);
     }
 
     // 강의 구매

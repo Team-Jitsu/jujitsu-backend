@@ -1,12 +1,12 @@
 package com.fightingkorea.platform.domain.user.entity;
 
 import com.fightingkorea.platform.domain.user.dto.UserRegisterRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fightingkorea.platform.domain.user.entity.type.Role;
 import com.fightingkorea.platform.domain.user.entity.type.Sex;
 import com.fightingkorea.platform.domain.user.entity.type.converter.RoleConverter;
 import com.fightingkorea.platform.domain.user.entity.type.converter.SexConverter;
 import com.fightingkorea.platform.domain.video.entity.UserVideo;
-import com.fightingkorea.platform.domain.video.entity.Video;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -62,6 +62,8 @@ public class User {
     private String gymLocation; // 수련중인 체육관
 
     @OneToMany(mappedBy = "user", cascade=CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @Builder.Default
     private List<UserVideo> userVideos = new ArrayList<>(); // 강의 구매 목록
 
     public static User createUser(UserRegisterRequest userRegisterRequest, Role role) {
