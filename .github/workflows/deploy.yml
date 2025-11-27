@@ -45,8 +45,12 @@ jobs:
           springdoc.swagger-ui.url=/api-docs
           springdoc.swagger-ui.operations-sorter=method
           app.s3.presignTtlSeconds=3600
+          spring.servlet.multipart.location=/data/tmp
           spring.servlet.multipart.max-file-size=10GB
           spring.servlet.multipart.max-request-size=10GB
+          # Tomcat request limits (allow large uploads)
+          server.tomcat.max-swallow-size=-1
+          server.tomcat.max-http-form-post-size=-1
           logging.level.root=INFO
           logging.level.org.springframework=INFO
           logging.level.org.hibernate=INFO
