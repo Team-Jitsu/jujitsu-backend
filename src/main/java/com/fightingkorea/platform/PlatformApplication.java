@@ -22,12 +22,11 @@ public class PlatformApplication {
 	public ApplicationRunner runner(Environment env) {
 		return (ApplicationArguments args) -> {
 			log.info("====== Environment Variables Loaded ======");
-			log.info("spring.datasource.username = {}", env.getProperty("spring.datasource.username"));
-			log.info("spring.datasource.password = {}", env.getProperty("spring.datasource.password"));
-			log.info("app.s3.bucket = {}", env.getProperty("app.s3.bucket"));
-			log.info("jwt.access.secret.key = {}", env.getProperty("jwt.access.secret.key"));
-			log.info("jwt.refresh.secret.key = {}", env.getProperty("jwt.refresh.secret.key"));
-			log.info("toss.payments.secret.key = {}", env.getProperty("toss.payments.secret.key"));
+
+			log.info("spring.servlet.multipart.max-file-size = {}", env.getProperty("spring.servlet.multipart.max-file-size"));
+			log.info("spring.servlet.multipart.max-request-size = {}", env.getProperty("spring.servlet.multipart.max-request-size"));
+			log.info("server.tomcat.max-swallow-size = {}", env.getProperty("server.tomcat.max-swallow-size"));
+			log.info("server.tomcat.max-http-form-post-size = {}", env.getProperty("server.tomcat.max-http-form-post-size"));
 			log.info("=========================================");
 		};
 	}
