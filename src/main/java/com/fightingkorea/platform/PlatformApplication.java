@@ -22,7 +22,6 @@ public class PlatformApplication {
 	public ApplicationRunner runner(Environment env) {
 		return (ApplicationArguments args) -> {
 			log.info("====== Environment Variables Loaded ======");
-
 			log.info("spring.servlet.multipart.max-file-size = {}", env.getProperty("spring.servlet.multipart.max-file-size"));
 			log.info("spring.servlet.multipart.max-request-size = {}", env.getProperty("spring.servlet.multipart.max-request-size"));
 			log.info("server.tomcat.max-swallow-size = {}", env.getProperty("server.tomcat.max-swallow-size"));
