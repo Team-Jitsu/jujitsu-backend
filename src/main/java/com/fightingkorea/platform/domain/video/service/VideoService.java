@@ -24,4 +24,10 @@ public interface VideoService {
 
     VideoResponse getVideo(Long videoId);
 
+    // Presigned URL 생성 (클라이언트 직접 업로드용)
+    VideoUploadUrlResponse createUploadUrl(VideoUploadUrlRequest request);
+
+    // 업로드 완료 후 메타데이터 저장
+    VideoResponse completeVideoUpload(VideoUploadCompleteRequest request);
+
 }

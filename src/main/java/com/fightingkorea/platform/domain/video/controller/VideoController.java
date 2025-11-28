@@ -1,9 +1,6 @@
 package com.fightingkorea.platform.domain.video.controller;
 
-import com.fightingkorea.platform.domain.video.dto.VideoResponse;
-import com.fightingkorea.platform.domain.video.dto.VideoSearchRequest;
-import com.fightingkorea.platform.domain.video.dto.VideoUpdateRequest;
-import com.fightingkorea.platform.domain.video.dto.VideoUploadMultipartRequest;
+import com.fightingkorea.platform.domain.video.dto.*;
 import com.fightingkorea.platform.domain.video.service.VideoService;
 import com.fightingkorea.platform.domain.order.dto.VideoPurchaseRequest;
 import com.fightingkorea.platform.domain.order.entity.Order;
@@ -106,5 +103,16 @@ public class VideoController {
         return purchaseService.purchaseVideo(request);
     }
 
+    // Presigned URL 생성 (클라이언트 직접 업로드용)
+    @PostMapping("/upload-url")
+    public VideoUploadUrlResponse getUploadUrl(@RequestBody @Validated VideoUploadUrlRequest request) {
+        return videoService.createUploadUrl(request);
+    }
+
+    // 업로드 완료 후 메타데이터 저장
+    @PostMapping("/complete-upload")
+    public VideoResponse completeUpload(@RequestBody @Validated VideoUploadCompleteRequest request) {
+        return videoService.completeVideoUpload(request);
+    }
 
 }

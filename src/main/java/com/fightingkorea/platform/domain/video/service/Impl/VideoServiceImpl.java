@@ -248,5 +248,66 @@ public class VideoServiceImpl implements VideoService {
         return toDtoWithNoLink(video);
     }
 
+    @Override
+    public VideoUploadUrlResponse createUploadUrl(VideoUploadUrlRequest request) {
+        // S3 키 생성
+        String s3Key = s3.newVideoKey(request.getFilename());
+        
+        // Presigned PUT URL 생성 (1시간 유효)
+        var presignedUpload = s3.createPresignedPut(
+            s3Key, 
+            request.getContentType(), 
+            Duration.ofHours(1)
+        );
+        
+        log.info("Presigned upload URL 생성: s3Key={}, contentType={}", s3Key, request.getContentType());
+        
+        return new VideoUploadUrlResponse(
+            presignedUpload.url(),
+            s3Key,
+            presignedUpload.expiresAt()
+        );
+    }
+
+    @Override
+    public VideoResponse completeVideoUpload(VideoUploadCompleteRequest request) {
+        validateTitle(request.getTitle());
+        Trainer trainer = trainerRepository.getReferenceById(request.getTrainerId());
+
+        // S3에 이미 업로드된 파일이므로, 바로 Video 엔티티 생성
+        // createVideoFromMultipart와 동일한 방식으로 생성
+        Video video = Video.builder()
+            .trainer(trainer)
+            .title(request.getTitle())
+            .description(request.getDescription())
+            .price(request.getPrice() != null ? request.getPrice() : 0)
+            .s3Key(request.getS3Key())
+            .likesCount(0)
+            .build();
+        
+        videoRepository.save(video);
+        
+        // 카테고리 설정
+        if (request.getCategoryIds() != null && !request.getCategoryIds().isEmpty()) {
+            categoryService.setVideoCategory(video.getVideoId(), request.getCategoryIds());
+        }
+
+        log.info("동영상 업로드 완료 (Presigned): videoId={}, title={}, s3Key={}", 
+            video.getVideoId(), video.getTitle(), video.getS3Key());
+
+        // 재생 URL 생성
+        var read = s3.createPresignedGet(video.getS3Key(), Duration.ofHours(1));
+        return VideoResponse.builder()
+                .videoId(video.getVideoId())
+                .title(video.getTitle())
+                .description(video.getDescription())
+                .price(video.getPrice())
+                .s3Key(video.getS3Key())
+                .playUrl(read.url())
+                .urlExpires(read.expiresAt())
+                .trainer(ResponseMapper.toTrainerSummaryResponse(video.getTrainer()))
+                .build();
+    }
+
 
 }
